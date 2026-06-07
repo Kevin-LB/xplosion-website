@@ -33,14 +33,32 @@ export const metadata: Metadata = {
   },
   description:
     "Club de cheerleading All-Star basé à Orléans. Champions de France, qualifiés aux All Star Worlds. Rejoignez l'aventure Xplosion.",
+  // Viewport via Next.js metadata — pas besoin de balise manuelle
+  viewport: 'width=device-width, initial-scale=1',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${playfair.variable} ${barlow.variable} ${barlowCondensed.variable}`}>
-      <body style={{ fontFamily: 'var(--font-barlow), system-ui, sans-serif', fontWeight: 300 }}>
+    <html
+      lang="fr"
+      className={`${playfair.variable} ${barlow.variable} ${barlowCondensed.variable}`}
+      style={{
+        overflowX: 'hidden',
+        maxWidth: '100vw',
+      }}
+    >
+      <body
+        style={{
+          fontFamily: 'var(--font-barlow), system-ui, sans-serif',
+          fontWeight: 300,
+          overflowX: 'hidden',
+          maxWidth: '100vw',
+          margin: 0,
+          padding: 0,
+        }}
+      >
         <Navbar />
-        <main>{children}</main>
+        <main style={{ overflowX: 'hidden' }}>{children}</main>
         <Footer />
       </body>
     </html>

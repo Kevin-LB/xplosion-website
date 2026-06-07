@@ -14,19 +14,55 @@
   --border:       #DDD9D2;
   --border-light: #ECEAE5;
   --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+
+  --px: 64px;
+  --py: 96px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --px: 20px;
+    --py: 56px;
+  }
 }
 
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 body {
   background-color: var(--white);
   color: var(--ink);
+  overflow-x: hidden;
 }
 
+body.menu-open {
+  overflow: hidden;
+}
+
+/* ── MASQUER LA SCROLLBAR COMPLÈTEMENT ──────────────────────────
+   Fonctionne sur Chrome, Safari, Edge (Webkit) + Firefox         */
+
+/* Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE / Edge legacy */
+body {
+  -ms-overflow-style: none;
+}
+/* ─────────────────────────────────────────────────────────────── */
+
+/* ── Label caps ── */
 .label-caps {
   display: flex;
   align-items: center;
@@ -56,22 +92,26 @@ body {
   color: var(--muted);
 }
 
-.hover-underline {
-  position: relative;
-  padding-bottom: 2px;
+/* ── Hover underline ── */
+@media (hover: hover) {
+  .hover-underline {
+    position: relative;
+    padding-bottom: 2px;
+  }
+  .hover-underline::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s var(--ease-expo);
+  }
+  .hover-underline:hover::after { transform: scaleX(1); }
 }
-.hover-underline::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s var(--ease-expo);
-}
-.hover-underline:hover::after { transform: scaleX(1); }
 
+/* ── Card hover bar ── */
 .card-hover-bar { position: relative; overflow: hidden; }
 .card-hover-bar::after {
   content: '';
@@ -83,8 +123,11 @@ body {
   transform-origin: left;
   transition: transform 0.35s var(--ease-expo);
 }
-.card-hover-bar:hover::after { transform: scaleX(1); }
+@media (hover: hover) {
+  .card-hover-bar:hover::after { transform: scaleX(1); }
+}
 
+/* ── Ticker ── */
 .ticker-track {
   animation: ticker 22s linear infinite;
   white-space: nowrap;
@@ -95,9 +138,26 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+/* ── Responsive helpers ── */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 769px) {
+  .show-mobile { display: none !important; }
+}
 
+/* ── Selection ── */
 ::selection { background: var(--fire); color: white; }
+
+/* ── Fix barre blanche sur les côtés ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
