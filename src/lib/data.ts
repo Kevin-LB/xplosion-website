@@ -112,7 +112,7 @@ export const CLUB_INFO = {
   status: 'Club All-Star',
   email: 'xplosioncheerleaders.xco@gmail.com',
   phone: '06 03 61 22 39',
-  address: 'Gymnase Olympe de Gouges, 45 ter rue des Montées, 45100 Orléans',
+  address: 'Gymnase Olympe de Gouges, 1 Pl. Albert Camus, 45100 Orléans',
   instagram: 'https://www.instagram.com/xplosion_cheer_orleans/',
   facebook: 'https://www.facebook.com/xplosioncheer45/',
   tiktok: '#',

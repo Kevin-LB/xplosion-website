@@ -91,9 +91,10 @@ export default function EntraînementsPage() {
             <div style={{ padding: '24px 28px', background: 'var(--cream)', border: '1px solid var(--border)' }}>
               <div style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '10px' }}>Adresse</div>
               <p style={{ fontSize: '15px', fontWeight: 400, color: 'var(--ink)', lineHeight: 1.6 }}>
-                45 ter rue des Montées<br />45100 Orléans
+                  1 Pl. Albert Camus<br />
+                  45100 Orléans
               </p>
-              <a href="https://maps.google.com/?q=45+ter+rue+des+Montées+45100+Orléans" target="_blank" rel="noopener noreferrer"
+              <a href="https://maps.google.com/?q=1+Place+Albert+Camus+45100+Orléans" target="_blank" rel="noopener noreferrer"
                 style={{ display: 'inline-block', marginTop: '14px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--fire)', textDecoration: 'none' }}>
                 Voir sur Google Maps →
               </a>
