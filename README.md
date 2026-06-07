@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Xplosion Website — Setup
 
-## Getting Started
+## ⚠️ Fix the broken npm state first
 
-First, run the development server:
+The `npm audit fix --force` downgraded Next.js to v9. Fix it by deleting everything and reinstalling:
 
 ```bash
+# 1. Go into the project folder
+cd /Users/kevlb/Desktop/PROJET/XPLOSION/xplosion-website
+
+# 2. Delete broken deps and lock file
+rm -rf node_modules package-lock.json
+
+# 3. Replace package.json with the correct one (copy from files provided)
+
+# 4. Clean install
+npm install
+
+# 5. Launch dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project structure
 
-## Learn More
+```
+src/
+  app/
+    layout.tsx          ← Root layout (fonts, navbar, footer)
+    page.tsx            ← Homepage
+    equipes/page.tsx    ← All teams
+    palmares/page.tsx   ← Full history
+    inscriptions/page.tsx
+    evenements/page.tsx
+    partenaires/page.tsx
+  components/
+    layout/
+      Navbar.tsx        ← Fixed nav, scroll-aware, mobile menu
+      Footer.tsx
+    sections/
+      Hero.tsx          ← Hero + Ticker
+      TeamsSection.tsx
+      PalmaresSection.tsx
+      DisciplineSection.tsx
+      ValuesSection.tsx
+      CtaAndPartners.tsx
+  lib/
+    data.ts             ← All content (teams, results, partners…)
+    utils.ts            ← cn() helper
+  styles/
+    globals.css         ← Design tokens + base styles
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js 15** (App Router)
+- **React 19**
+- **Tailwind CSS v4** (CSS-first, @import syntax)
+- **Framer Motion 12** (animations)
+- **Fonts**: Playfair Display (serif titles) + Barlow / Barlow Condensed (sans body/labels)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Design tokens (globals.css)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--cream` | #F5F2EE | Main background |
+| `--cream-2` | #EDE9E3 | Section backgrounds |
+| `--ink` | #1A1A1A | Primary text |
+| `--fire` | #C8401A | Accent / CTA |
+| `--gold` | #B8963E | Champion rank |
+| `--muted` | #8A8680 | Secondary text |
+| `--border` | #DDD9D2 | Dividers |
