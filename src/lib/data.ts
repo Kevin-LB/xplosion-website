@@ -20,13 +20,13 @@ export type Team = {
 }
 
 export const TEAMS: Team[] = [
-  { name: 'Intensity', level: 'Seniors · Coed · Niveau 4', category: 'Seniors Coed LVL 4', description: 'Équipe élite internationale. Grand Champion TSN 2026, bid Orlando & Summit Européen.', badge: 'Worlds', status: 'active', slug: 'intensity', photo: '/images/intensity.png' },
+  { name: 'Intensity', level: 'Seniors · Coed · Niveau 4', category: 'Seniors Coed LVL 4', description: 'Équipe élite internationale. Grand Champion TSN 2026, bid Orlando & Summit Européen.', badge: 'Worlds', status: 'active', slug: 'intensity', photo: '/images/intensity.jpg' },
   { name: 'Audacity', level: 'Seniors · Mixte · Niveau 1', category: 'Seniors Open LVL 1', description: 'Qualifiée All Star Worlds Orlando 2026. 1ère place Open Spice Event.', badge: 'Orlando', status: 'active', slug: 'audacity', photo: '/images/audacity.png' },
   { name: 'Silver Stars', level: 'U16 · All Girl · Niveau 1', category: 'U16 LVL 1', description: 'Grand Champion TSN Juin 2026 — Niveau 1/2. Qualification Summit Européen.', status: 'active', slug: 'silver-stars', photo: '/images/silver-stars.png' },
-  { name: 'Fire', level: 'U12 · All Girl · Niveau 1', category: 'U12 LVL 1', description: '1ère place Open Spice Event. Qualification Summit Européen.', status: 'active', slug: 'fire', photo: '/images/fire.png' },
-  { name: 'Sparks', level: 'Group Stunt · Coed · Niveau 5', category: 'Senior Group Stunt Coed LVL 5', description: 'Qualifiés Worlds Mexico 2026. 1ère Open Spice Event.', badge: 'Mexico', status: 'active', slug: 'sparks', photo: '/images/sparks.png' },
-  { name: 'Blackstarz', level: 'Group Stunt · Coed · Niveau 6/7', category: 'Senior Group Stunt Coed LVL 6/7', description: 'Niveau élite national. 1er OCC et SALC 2024/25.', status: 'active', slug: 'blackstarz', photo: '/images/blackstarz.png' },
-  { name: 'Ténacity', level: 'Seniors · Niveau 3', category: 'Seniors LVL 3', description: 'Équipe en réouverture pour la saison 2025/26. Tryouts prévus le 27 juin 2026.', badge: 'Nouveau', status: 'active', slug: 'tenacity' },
+  { name: 'Fire', level: 'U12 · All Girl · Niveau 1', category: 'U12 LVL 1', description: '1ère place Open Spice Event. Qualification Summit Européen.', status: 'active', slug: 'fire', photo: '/images/fire.jpg' },
+  { name: 'Sparks', level: 'Group Stunt · Coed · Niveau 5', category: 'Senior Group Stunt Coed LVL 5', description: 'Qualifiés Worlds Mexico 2026. 1ère Open Spice Event.', badge: 'Mexico', status: 'active', slug: 'sparks', photo: '/images/sparks.jpg' },
+  { name: 'Blackstarz', level: 'Group Stunt · Coed · Niveau 6/7', category: 'Senior Group Stunt Coed LVL 6/7', description: 'Niveau élite national. 1er OCC et SALC 2024/25.', status: 'active', slug: 'blackstarz' },
+  { name: 'Tenacity', level: 'Seniors · Niveau 3', category: 'Seniors LVL 3', description: 'Équipe en réouverture pour la saison 2025/26. Tryouts prévus le 27 juin 2026.', badge: 'Nouveau', status: 'active', slug: 'tenacity' },
   { name: 'Fire Queens', level: 'U12 · Group Stunt · Niveau 2', category: 'U12 Group Stunt All Girl LVL 2', description: 'Équipe jeunes compétition.', status: 'active', slug: 'fire-queens' },
   { name: 'Dark Fire', level: 'U12 · Group Stunt · Niveau 2', category: 'U12 Group Stunt All Girl LVL 2', description: 'Équipe jeunes compétition.', status: 'active', slug: 'dark-fire' },
   { name: 'Starlight', level: 'U16 · Group Stunt · Niveau 2', category: 'U16 Group Stunt All Girl LVL 2', description: 'Équipe juniors Group Stunt.', status: 'active', slug: 'starlight' },

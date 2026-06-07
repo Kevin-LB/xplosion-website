@@ -34,7 +34,7 @@ export default function EquipesPage() {
               Tryouts · Samedi 27 juin 2026
             </div>
             <p style={{ fontSize: '15px', fontWeight: 300, color: 'rgba(255,255,255,0.75)', lineHeight: 1.7 }}>
-              Rejoins <strong style={{ color: 'white', fontWeight: 500 }}>Intensity</strong> ou <strong style={{ color: 'white', fontWeight: 500 }}>Ténacity</strong> — inscriptions via HelloAsso.
+              Rejoins <strong style={{ color: 'white', fontWeight: 500 }}>Intensity</strong> ou <strong style={{ color: 'white', fontWeight: 500 }}>Tenacity</strong> — inscriptions via HelloAsso.
             </p>
           </div>
           <HoverAnchor

@@ -20,6 +20,7 @@ function NavCta() {
         background: hovered ? 'var(--fire)' : 'var(--ink)',
         color: 'white', padding: '11px 28px',
         transition: 'background 0.25s',
+        flexShrink: 0,
       }}
     >
       Rejoindre
@@ -45,30 +46,72 @@ export function Navbar() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 64px', height: '64px',
+        padding: '0 48px', height: '64px',
         transition: 'background 0.3s, border-color 0.3s',
         background: scrolled ? 'rgba(250,250,248,0.95)' : 'transparent',
         backdropFilter: scrolled ? 'blur(12px)' : 'none',
         borderBottom: scrolled ? '1px solid var(--border-light)' : '1px solid transparent',
       }}
     >
-      <Link href="/" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-        <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: '19px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--ink)' }}>Xplosion</span>
-        <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '9px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--fire)', marginTop: '2px' }}>ASPTT Orléans · All-Star</span>
+      {/* ── LOGO ── */}
+      <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Image logo */}
+        <img
+          src="/images/logo.png"
+          alt="Xplosion logo"
+          style={{
+            height: '40px',
+            width: 'auto',
+            objectFit: 'contain',
+            display: 'block',
+            // Légère ombre pour que le logo soit lisible sur fond transparent (hero)
+            filter: scrolled ? 'none' : 'drop-shadow(0 1px 3px rgba(0,0,0,0.15))',
+            transition: 'filter 0.3s',
+          }}
+        />
+        {/* Texte logo */}
+        <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+          <span style={{
+            fontFamily: 'var(--font-playfair), serif',
+            fontWeight: 700, fontSize: '17px',
+            letterSpacing: '2px', textTransform: 'uppercase',
+            color: 'var(--ink)',
+          }}>
+            Xplosion
+          </span>
+          <span style={{
+            fontFamily: 'var(--font-barlow-condensed), sans-serif',
+            fontWeight: 500, fontSize: '8px',
+            letterSpacing: '3px', textTransform: 'uppercase',
+            color: 'var(--fire)', marginTop: '2px',
+          }}>
+            ASPTT Orléans · All-Star
+          </span>
+        </div>
       </Link>
 
-      <nav style={{ display: 'flex', gap: '36px' }}>
+      {/* ── NAV LINKS ── */}
+      <nav style={{ display: 'flex', gap: '28px' }}>
         {NAV_LINKS.map((link) => (
-          <Link key={link.href} href={link.href} className="hover-underline" style={{
-            fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500,
-            fontSize: '12px', letterSpacing: '1.5px', textTransform: 'uppercase',
-            textDecoration: 'none',
-            color: pathname === link.href ? 'var(--ink)' : 'var(--muted)',
-            transition: 'color 0.2s',
-          }}>{link.label}</Link>
+          <Link
+            key={link.href}
+            href={link.href}
+            className="hover-underline"
+            style={{
+              fontFamily: 'var(--font-barlow-condensed), sans-serif',
+              fontWeight: 500, fontSize: '11px',
+              letterSpacing: '1.5px', textTransform: 'uppercase',
+              textDecoration: 'none',
+              color: pathname === link.href ? 'var(--ink)' : 'var(--muted)',
+              transition: 'color 0.2s',
+            }}
+          >
+            {link.label}
+          </Link>
         ))}
       </nav>
 
+      {/* ── CTA ── */}
       <NavCta />
     </motion.header>
   )
