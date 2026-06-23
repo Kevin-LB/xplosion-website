@@ -34,9 +34,9 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
       {/* ── Hero équipe ── */}
       <div style={{ position: 'relative', background: 'var(--cream)', borderBottom: '1px solid var(--border-light)', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: { base: '1fr', md: team.photo ? '1fr 1fr' : '1fr' }.__proto__.constructor.name === 'String' ? '1fr' : team.photo ? 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' : '1fr', minHeight: team.photo ? 'auto' : 'auto' }}>
-          {/* Texte — mobile first */}
-          <div style={{ padding: 'clamp(32px,6vw,80px) var(--px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', order: team.photo ? { base: 2, md: 1 }.__proto__.constructor.name === 'Object' ? 1 : 1 : 1 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: team.photo ? 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' : '1fr', gap: 0 }}>
+          {/* Texte */}
+          <div style={{ padding: 'clamp(32px,6vw,80px) var(--px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <Link href="/equipes" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', textDecoration: 'none', marginBottom: '24px', width: 'fit-content' }}>
               ← Toutes les équipes
             </Link>
@@ -56,7 +56,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
           {/* Photo */}
           {team.photo && (
-            <div style={{ position: 'relative', minHeight: '280px', order: 1 }}>
+            <div style={{ position: 'relative', minHeight: '280px' }}>
               <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, var(--cream) 0%, transparent 30%)' }} />
             </div>
