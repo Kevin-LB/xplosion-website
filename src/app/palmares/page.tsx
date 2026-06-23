@@ -5,7 +5,7 @@ import { RESULTS } from '@/lib/data'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
 const SEASONS = ['2025/2026', '2024/2025', '2022/2023', '2021/2022', '2018/2019', '2017/2018', '2016/2017', '2015/2016']
-const TEAMS_LIST = ['Intensity', 'Audacity', 'Silver Stars', 'Fire', 'Sparks', 'Blackstarz', 'Gravity', 'Power', 'Ferocity', 'Météore', 'Fusion', 'Équipe Seniors Niveau 1', 'Équipe Seniors']
+const TEAMS_LIST = ['Intensity', 'Audacity', 'Silver Stars', 'Fire', 'Sparks', 'Blackstarz', 'Gravity', 'Power', 'Ferocity', 'Météore', 'Fusion', 'Équipe Seniors Niveau 1', 'Équipe Seniors', 'Tenacity']
 
 type View = 'saison' | 'equipe'
 type SortOrder = 'rank' | 'team'
@@ -14,9 +14,14 @@ function ResultRow({ r, showSeason = false, compact = false }: { r: typeof RESUL
   return (
     <div style={{ display: 'grid', gridTemplateColumns: compact ? '32px 1fr' : '44px 1fr auto', alignItems: 'center', gap: compact ? '10px' : '16px', padding: compact ? '14px 0' : '18px 0', borderBottom: '1px solid var(--border-light)' }}>
       <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: compact ? '20px' : '26px', color: r.highlight ? 'var(--gold)' : 'var(--fire)', lineHeight: 1 }}>{r.rank ?? '—'}</span>
-      <div>
-        <div style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: compact ? '11px' : '14px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--ink)', marginBottom: '3px' }}>{r.competition}</div>
-        <div style={{ fontSize: '12px', fontWeight: 300, color: 'var(--muted)', lineHeight: 1.4 }}>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: compact ? '11px' : '14px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--ink)', marginBottom: '4px' }}>{r.competition}</div>
+        {r.date && (
+          <div style={{ fontSize: '11px', fontWeight: 300, color: 'var(--fire)', fontFamily: 'var(--font-barlow-condensed), sans-serif', letterSpacing: '0.5px', marginBottom: '3px' }}>
+            📅 {r.date}
+          </div>
+        )}
+        <div style={{ fontSize: compact ? '11px' : '12px', fontWeight: 300, color: 'var(--muted)', lineHeight: 1.4 }}>
           {r.team}{r.detail && ` — ${r.detail}`}
           {showSeason && <span style={{ display: 'inline-block', marginLeft: '6px', fontSize: '10px', color: 'var(--border)', fontStyle: 'italic' }}>{r.season}</span>}
         </div>
@@ -37,179 +42,100 @@ function ResultRow({ r, showSeason = false, compact = false }: { r: typeof RESUL
   )
 }
 
-/* Mobile: accordion team selector */
-function TeamAccordion() {
-  const [openTeam, setOpenTeam] = useState<string | null>('Intensity')
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      {TEAMS_LIST.map(team => {
-        const rows = RESULTS.filter(r => r.team === team)
-        if (!rows.length) return null
-        const isOpen = openTeam === team
-
-        return (
-          <div key={team} style={{ borderBottom: '1px solid var(--border-light)' }}>
-            {/* Team header — tap to expand */}
-            <button
-              onClick={() => setOpenTeam(isOpen ? null : team)}
-              style={{
-                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '18px 20px', background: isOpen ? 'var(--cream)' : 'var(--white)',
-                border: 'none', cursor: 'pointer', textAlign: 'left',
-                borderLeft: `3px solid ${isOpen ? 'var(--fire)' : 'transparent'}`,
-                transition: 'background 0.2s, border-color 0.2s',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: isOpen ? 700 : 400, fontSize: '18px', color: isOpen ? 'var(--fire)' : 'var(--ink)' }}>{team}</span>
-                <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontSize: '10px', letterSpacing: '1px', color: 'var(--muted)' }}>{rows.length} rés.</span>
-              </div>
-              <motion.span style={{ display: 'block', color: isOpen ? 'var(--fire)' : 'var(--muted)', fontSize: '16px', transition: 'transform 0.2s', transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}>→</motion.span>
-            </button>
-
-            {/* Results */}
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ overflow: 'hidden' }}
-                >
-                  <div style={{ padding: '0 20px 8px' }}>
-                    {rows.map((r, i) => <ResultRow key={i} r={r} showSeason compact />)}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-/* Desktop: sidebar + results panel */
-function TeamDesktop() {
-  const [activeTeam, setActiveTeam] = useState('Intensity')
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', minHeight: '500px' }}>
-      <div style={{ background: 'var(--cream)', borderRight: '1px solid var(--border)', padding: '32px 0' }}>
-        {TEAMS_LIST.map(team => {
-          const count = RESULTS.filter(r => r.team === team).length
-          if (!count) return null
-          return (
-            <button key={team} onClick={() => setActiveTeam(team)}
-              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', padding: '14px 28px', border: 'none', background: activeTeam === team ? 'var(--white)' : 'transparent', cursor: 'pointer', borderLeft: `3px solid ${activeTeam === team ? 'var(--fire)' : 'transparent'}`, transition: 'all 0.2s' }}>
-              <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: activeTeam === team ? 700 : 400, fontSize: '16px', color: activeTeam === team ? 'var(--ink)' : 'var(--muted)', textAlign: 'left' }}>{team}</span>
-              <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontSize: '10px', color: 'var(--muted)' }}>{count}</span>
-            </button>
-          )
-        })}
-      </div>
-      <div style={{ padding: '48px 64px' }}>
-        <h2 style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: '36px', color: 'var(--ink)', marginBottom: '6px' }}>
-          <em style={{ fontStyle: 'italic', color: 'var(--fire)' }}>{activeTeam}</em>
-        </h2>
-        <p style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '28px' }}>
-          {RESULTS.filter(r => r.team === activeTeam).length} résultat{RESULTS.filter(r => r.team === activeTeam).length > 1 ? 's' : ''}
-        </p>
-        {RESULTS.filter(r => r.team === activeTeam).map((r, i) => <ResultRow key={i} r={r} showSeason />)}
-      </div>
-    </div>
-  )
-}
-
-import { motion, AnimatePresence } from 'framer-motion'
-
 export default function PalmaresPage() {
   const [view, setView] = useState<View>('saison')
+  const [selectedSeason, setSelectedSeason] = useState<string>('2025/2026')
+  const [selectedTeam, setSelectedTeam] = useState<string>('Intensity')
   const [sortOrder, setSortOrder] = useState<SortOrder>('rank')
   const isMobile = useIsMobile()
+  const compact = isMobile
 
-  const btnStyle = (active: boolean): React.CSSProperties => ({
-    fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '11px',
-    letterSpacing: '2px', textTransform: 'uppercase', padding: '10px 20px',
-    border: 'none', cursor: 'pointer',
-    background: active ? 'var(--ink)' : 'transparent',
-    color: active ? 'white' : 'var(--muted)',
-    transition: 'all 0.2s',
-  })
+  const seasonResults = RESULTS.filter((r) => r.season === selectedSeason)
+  const teamResults = RESULTS.filter((r) => r.team === selectedTeam)
 
-  const sortBtnStyle = (active: boolean): React.CSSProperties => ({
-    fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px',
-    letterSpacing: '2px', textTransform: 'uppercase', padding: '7px 14px',
-    border: '1px solid var(--border)', cursor: 'pointer',
-    background: active ? 'var(--cream-2)' : 'transparent',
-    color: active ? 'var(--ink)' : 'var(--muted)',
-    transition: 'all 0.2s',
-  })
-
-  const sortResults = (rows: typeof RESULTS) => {
-    if (sortOrder === 'team') return [...rows].sort((a, b) => a.team.localeCompare(b.team, 'fr'))
-    return [...rows].sort((a, b) => { if (a.rank === null) return 1; if (b.rank === null) return -1; return a.rank - b.rank })
-  }
+  const sortedResults = (() => {
+    const data = view === 'saison' ? seasonResults : teamResults
+    if (sortOrder === 'rank') return data.sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))
+    return data.sort((a, b) => a.team.localeCompare(b.team))
+  })()
 
   return (
-    <div style={{ paddingTop: '60px' }}>
-      {/* Header */}
-      <div style={{ background: 'var(--cream)', padding: 'var(--py) var(--px) 40px', borderBottom: '1px solid var(--border-light)' }}>
-        <div className="label-caps" style={{ marginBottom: '16px' }}>Depuis 2015</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '20px' }}>
-          <h1 style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(40px, 7vw, 80px)', lineHeight: 0.95, letterSpacing: '-1.5px' }}>
-            Palmarès <em style={{ fontStyle: 'italic', color: 'var(--fire)' }}>complet</em>
-          </h1>
-          <div style={{ display: 'flex', border: '1px solid var(--border)', overflow: 'hidden' }}>
-            <button style={btnStyle(view === 'saison')} onClick={() => setView('saison')}>Par saison</button>
-            <button style={{ ...btnStyle(view === 'equipe'), borderLeft: '1px solid var(--border)' }} onClick={() => setView('equipe')}>Par équipe</button>
-          </div>
-        </div>
+    <div style={{ paddingTop: '64px' }}>
+
+      {/* ── Header ── */}
+      <div style={{ background: 'var(--cream)', padding: 'clamp(48px,8vw,80px) var(--px) clamp(32px,5vw,64px)', borderBottom: '1px solid var(--border-light)' }}>
+        <div className="label-caps" style={{ marginBottom: '20px' }}>Nos résultats</div>
+        <h1 style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(40px, 7vw, 80px)', lineHeight: 0.95, letterSpacing: '-1.5px', marginBottom: '12px' }}>
+          <em style={{ fontStyle: 'italic', color: 'var(--fire)' }}>Palmarès</em>
+        </h1>
+        <p style={{ fontSize: 'clamp(13px,2vw,15px)', fontWeight: 300, color: 'var(--muted)', maxWidth: '520px', lineHeight: 1.7 }}>
+          Retrouvez tous les résultats de nos équipes aux compétitions nationales et internationales.
+        </p>
       </div>
 
-      {/* BY SEASON */}
-      {view === 'saison' && (
-        <div style={{ padding: 'var(--py) var(--px)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '40px', flexWrap: 'wrap' }}>
-            <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginRight: '4px' }}>Trier par</span>
-            <button style={sortBtnStyle(sortOrder === 'rank')} onClick={() => setSortOrder('rank')}>Classement</button>
-            <button style={sortBtnStyle(sortOrder === 'team')} onClick={() => setSortOrder('team')}>Équipe</button>
-          </div>
+      <div style={{ padding: 'clamp(40px,8vw,80px) var(--px)' }}>
 
-          {SEASONS.map(season => {
-            const raw = RESULTS.filter(r => r.season === season)
-            if (!raw.length) return null
-            const rows = sortResults(raw)
-            return (
-              <div key={season} style={{ marginBottom: '56px' }}>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '16px', marginBottom: '16px', paddingBottom: '14px', borderBottom: '1px solid var(--border)' }}>
-                  <h2 style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(22px, 4vw, 28px)', color: 'var(--ink)' }}>{season}</h2>
-                  <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>{rows.length} rés.</span>
-                </div>
-                {rows.map((r, i) => <ResultRow key={i} r={r} compact={isMobile} />)}
-              </div>
-            )
-          })}
-
-          <div style={{ padding: '20px 24px', background: 'var(--cream)', border: '1px solid var(--border-light)' }}>
-            <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>2019 / 2021</span>
-            <p style={{ fontSize: '13px', fontWeight: 300, color: 'var(--muted)', marginTop: '6px' }}>Compétitions annulées — pandémie COVID-19.</p>
-          </div>
+        {/* ── View toggles ── */}
+        <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
+          {(['saison', 'equipe'] as const).map((v) => (
+            <button key={v}
+              onClick={() => setView(v)}
+              style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', padding: '10px 20px', background: view === v ? 'var(--fire)' : 'var(--cream)', color: view === v ? 'white' : 'var(--ink)', border: 'none', cursor: 'pointer', transition: 'background 0.2s' }}>
+              Par {v === 'saison' ? 'saison' : 'équipe'}
+            </button>
+          ))}
         </div>
-      )}
 
-      {/* BY TEAM */}
-      {view === 'equipe' && (
-        isMobile ? (
-          <div style={{ paddingTop: '8px' }}>
-            <TeamAccordion />
+        {/* ── Dropdown selectors ── */}
+        {view === 'saison' ? (
+          <div style={{ marginBottom: '32px' }}>
+            <label style={{ display: 'block', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '10px' }}>
+              Saison
+            </label>
+            <select value={selectedSeason} onChange={(e) => setSelectedSeason(e.target.value)}
+              style={{ fontFamily: 'inherit', fontWeight: 500, fontSize: '14px', padding: '10px 16px', background: 'var(--cream)', border: '1px solid var(--border-light)', color: 'var(--ink)', cursor: 'pointer', width: '100%', maxWidth: '220px' }}>
+              {SEASONS.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
           </div>
         ) : (
-          <TeamDesktop />
-        )
-      )}
+          <div style={{ marginBottom: '32px' }}>
+            <label style={{ display: 'block', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '10px' }}>
+              Équipe
+            </label>
+            <select value={selectedTeam} onChange={(e) => setSelectedTeam(e.target.value)}
+              style={{ fontFamily: 'inherit', fontWeight: 500, fontSize: '14px', padding: '10px 16px', background: 'var(--cream)', border: '1px solid var(--border-light)', color: 'var(--ink)', cursor: 'pointer', width: '100%', maxWidth: '220px' }}>
+              {TEAMS_LIST.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+        )}
+
+        {/* ── Sort order (saison view only) ── */}
+        {view === 'saison' && !compact && (
+          <div style={{ marginBottom: '24px', display: 'flex', gap: '12px' }}>
+            {(['rank', 'team'] as const).map((order) => (
+              <button key={order}
+                onClick={() => setSortOrder(order)}
+                style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '1.5px', textTransform: 'uppercase', padding: '6px 12px', background: sortOrder === order ? 'var(--ink)' : 'transparent', color: sortOrder === order ? 'white' : 'var(--muted)', border: `1px solid ${sortOrder === order ? 'var(--ink)' : 'var(--border)'}`, cursor: 'pointer', transition: 'all 0.2s' }}>
+                {order === 'rank' ? 'Classement' : 'Équipe'}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* ── Results list ── */}
+        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
+          {sortedResults.length > 0 ? (
+            sortedResults.map((r, i) => (
+              <ResultRow key={i} r={r} showSeason={view === 'equipe'} compact={compact} />
+            ))
+          ) : (
+            <p style={{ padding: '20px 0', color: 'var(--muted)', fontSize: '14px' }}>
+              Aucun résultat pour cette sélection.
+            </p>
+          )}
+        </div>
+
+      </div>
     </div>
   )
 }

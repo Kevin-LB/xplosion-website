@@ -10,7 +10,9 @@ export function TeamsSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const isMobile = useIsMobile()
-  const featured = TEAMS.filter((t) => t.status === 'active').slice(0, 6)
+
+  // Page d'accueil : uniquement les équipes "active" (pas les GS, pas les loisirs)
+  const featured = TEAMS.filter((t) => t.status === 'active')
 
   return (
     <section style={{ background: 'var(--cream)', padding: `var(--py) var(--px)` }}>
@@ -33,7 +35,6 @@ export function TeamsSection() {
       </div>
 
       {isMobile ? (
-        /* Mobile: cards avec gap (pas de grille 1px) */
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {featured.map((team, i) => (
             <motion.div key={team.slug}
@@ -64,7 +65,6 @@ export function TeamsSection() {
           ))}
         </div>
       ) : (
-        /* Desktop: grille 3 colonnes serrée */
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1px', background: 'var(--border)', border: '1px solid var(--border)' }}>
           {featured.map((team, i) => (
             <motion.div key={team.slug}
@@ -96,7 +96,7 @@ export function TeamsSection() {
 
       <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.3 }}
         style={{ marginTop: '16px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>
-        + Blackstarz · Fire Queens · Dark Fire · Starlight · Cosmo
+        + Group Stunt : Sparks · Blackstarz · Fire Queens · Dark Fire · Starlight · Lemon
         <Link href="/equipes" className="hover-underline" style={{ marginLeft: '12px', color: 'var(--fire)', textDecoration: 'none' }}>Tout voir →</Link>
       </motion.p>
     </section>

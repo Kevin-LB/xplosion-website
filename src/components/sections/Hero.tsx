@@ -7,9 +7,9 @@ import { TICKER_ITEMS } from '@/lib/data'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
 const HERO_STATS = [
-  { num: '10', sup: '+', label: 'Équipes actives' },
-  { num: '4', sup: '', label: 'Bids Worlds 2026' },
-  { num: '90', sup: '.30', label: 'Score record ECC' },
+  { num: '6', sup: '', label: 'Équipes actives' },
+  { num: '3', sup: '', label: 'Équipes Summit EU 2027' },
+  { num: '1', sup: '', label: 'Équipe Summit Orlando 2027' },
 ]
 
 export function Hero() {
