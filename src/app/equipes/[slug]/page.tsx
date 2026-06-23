@@ -34,17 +34,17 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
       {/* ── Hero équipe ── */}
       <div style={{ position: 'relative', background: 'var(--cream)', borderBottom: '1px solid var(--border-light)', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: team.photo ? '1fr 1fr' : '1fr', minHeight: team.photo ? '420px' : 'auto' }}>
-          {/* Texte */}
-          <div style={{ padding: 'clamp(40px,7vw,80px) var(--px)', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <Link href="/equipes" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', textDecoration: 'none', marginBottom: '24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: { base: '1fr', md: team.photo ? '1fr 1fr' : '1fr' }.__proto__.constructor.name === 'String' ? '1fr' : team.photo ? 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' : '1fr', minHeight: team.photo ? 'auto' : 'auto' }}>
+          {/* Texte — mobile first */}
+          <div style={{ padding: 'clamp(32px,6vw,80px) var(--px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', order: team.photo ? { base: 2, md: 1 }.__proto__.constructor.name === 'Object' ? 1 : 1 : 1 }}>
+            <Link href="/equipes" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)', textDecoration: 'none', marginBottom: '24px', width: 'fit-content' }}>
               ← Toutes les équipes
             </Link>
             <div className="label-caps" style={{ marginBottom: '16px' }}>{sectionLabel}</div>
-            <h1 style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(40px, 7vw, 72px)', lineHeight: 0.98, letterSpacing: '-1.5px', marginBottom: '16px', color: 'var(--ink)' }}>
+            <h1 style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(32px, 7vw, 72px)', lineHeight: 0.98, letterSpacing: '-1.5px', marginBottom: '16px', color: 'var(--ink)' }}>
               {team.name}
             </h1>
-            <p style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '12px', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--fire)', marginBottom: '20px' }}>
+            <p style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: 'clamp(10px, 2vw, 12px)', letterSpacing: '2.5px', textTransform: 'uppercase', color: 'var(--fire)', marginBottom: '20px' }}>
               {team.level}
             </p>
             {team.badge && (
@@ -56,18 +56,18 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
           {/* Photo */}
           {team.photo && (
-            <div style={{ position: 'relative', minHeight: '320px' }}>
-              <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', inset: 0 }} />
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, var(--cream) 0%, transparent 15%)' }} />
+            <div style={{ position: 'relative', minHeight: '280px', order: 1 }}>
+              <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, var(--cream) 0%, transparent 30%)' }} />
             </div>
           )}
         </div>
       </div>
 
-      <div style={{ padding: 'clamp(40px,8vw,80px) var(--px)' }}>
+      <div style={{ padding: 'clamp(32px,6vw,80px) var(--px)' }}>
 
         {/* ── Description longue ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: 'clamp(32px,6vw,64px)', marginBottom: 'clamp(48px,8vw,80px)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: 'clamp(24px,5vw,64px)', marginBottom: 'clamp(40px,8vw,80px)' }}>
           <div>
             <div className="label-caps" style={{ marginBottom: '20px' }}>Présentation</div>
             <p style={{ fontSize: 'clamp(14px,2vw,16px)', fontWeight: 300, color: 'var(--ink-2)', lineHeight: 1.85 }}>
@@ -79,17 +79,17 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
           <div>
             <div className="label-caps" style={{ marginBottom: '20px' }}>En bref</div>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', padding: '14px 0', borderBottom: '1px solid var(--border-light)' }}>
-                <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>Catégorie</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'clamp(100px, 20vw, 140px) 1fr', gap: 'clamp(12px, 2vw, 16px)', padding: '14px 0', borderBottom: '1px solid var(--border-light)' }}>
+                <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: 'clamp(9px, 1.5vw, 10px)', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>Catégorie</span>
                 <span style={{ fontSize: '14px', color: 'var(--ink)' }}>{team.category}</span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', padding: '14px 0', borderBottom: '1px solid var(--border-light)' }}>
-                <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>Résultats</span>
+              <div style={{ display: 'grid', gridTemplateColumns: 'clamp(100px, 20vw, 140px) 1fr', gap: 'clamp(12px, 2vw, 16px)', padding: '14px 0', borderBottom: '1px solid var(--border-light)' }}>
+                <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: 'clamp(9px, 1.5vw, 10px)', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>Résultats</span>
                 <span style={{ fontSize: '14px', color: 'var(--ink)' }}>{results.length} compétition{results.length !== 1 ? 's' : ''} enregistrée{results.length !== 1 ? 's' : ''}</span>
               </div>
               {team.badge && (
-                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px', padding: '14px 0', borderBottom: '1px solid var(--border-light)' }}>
-                  <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>Objectif 26/27</span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'clamp(100px, 20vw, 140px) 1fr', gap: 'clamp(12px, 2vw, 16px)', padding: '14px 0', borderBottom: '1px solid var(--border-light)' }}>
+                  <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: 'clamp(9px, 1.5vw, 10px)', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--muted)' }}>Objectif 26/27</span>
                   <span style={{ fontSize: '14px', color: 'var(--fire)', fontWeight: 500 }}>{team.badge}</span>
                 </div>
               )}
@@ -99,9 +99,9 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
         {/* ── Galerie ── */}
         {team.gallery && team.gallery.length > 0 && (
-          <div style={{ marginBottom: 'clamp(48px,8vw,80px)' }}>
+          <div style={{ marginBottom: 'clamp(40px,8vw,80px)' }}>
             <div className="label-caps" style={{ marginBottom: '20px' }}>Galerie</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 'clamp(10px, 2vw, 12px)' }}>
               {team.gallery.map((img, i) => (
                 <div key={i} style={{ aspectRatio: '4/3', overflow: 'hidden', background: 'var(--cream-2)' }}>
                   <img src={img} alt={`${team.name} ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -113,21 +113,21 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
         {/* ── Résultats de l'équipe ── */}
         {results.length > 0 && (
-          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'clamp(40px,6vw,64px)', marginBottom: 'clamp(40px,6vw,64px)' }}>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'clamp(32px,6vw,64px)', marginBottom: 'clamp(40px,6vw,64px)' }}>
             <div className="label-caps" style={{ marginBottom: '20px' }}>Palmarès de l'équipe</div>
             <div>
               {results.map((r, i) => (
-                <div key={i} style={{ display: 'grid', gridTemplateColumns: '40px 1fr auto', alignItems: 'center', gap: '16px', padding: '16px 0', borderBottom: '1px solid var(--border-light)' }}>
-                  <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: '22px', color: r.highlight ? 'var(--gold)' : 'var(--fire)' }}>{r.rank ?? '—'}</span>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '13px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--ink)' }}>{r.competition}</span>
-                      {r.date && <span style={{ fontSize: '10px', color: 'var(--fire)', fontFamily: 'var(--font-barlow-condensed), sans-serif', letterSpacing: '1px', textTransform: 'uppercase' }}>🗓 {r.date}</span>}
+                <div key={i} style={{ display: 'grid', gridTemplateColumns: 'clamp(36px, 8vw, 50px) 1fr auto', alignItems: 'flex-start', gap: 'clamp(12px, 2vw, 16px)', padding: 'clamp(12px, 2vw, 16px) 0', borderBottom: '1px solid var(--border-light)' }}>
+                  <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(18px, 4vw, 22px)', color: r.highlight ? 'var(--gold)' : 'var(--fire)' }}>{r.rank ?? '—'}</span>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                      <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: 'clamp(11px, 2vw, 13px)', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--ink)' }}>{r.competition}</span>
+                      {r.date && <span style={{ fontSize: 'clamp(9px, 1.5vw, 10px)', color: 'var(--fire)', fontFamily: 'var(--font-barlow-condensed), sans-serif', letterSpacing: '0.5px' }}>📅 {r.date}</span>}
                     </div>
-                    {r.detail && <div style={{ fontSize: '12px', fontWeight: 300, color: 'var(--muted)', marginTop: '2px' }}>{r.detail}</div>}
+                    {r.detail && <div style={{ fontSize: 'clamp(11px, 1.8vw, 12px)', fontWeight: 300, color: 'var(--muted)', marginBottom: '4px' }}>{r.detail}</div>}
                   </div>
                   {r.tag && (
-                    <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '9px', letterSpacing: '1.5px', textTransform: 'uppercase', padding: '4px 10px', border: `1px solid ${r.highlight ? 'var(--fire)' : 'var(--border)'}`, color: r.highlight ? 'var(--fire)' : 'var(--muted)', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: 'clamp(8px, 1.3vw, 9px)', letterSpacing: '1.5px', textTransform: 'uppercase', padding: '3px 8px', border: `1px solid ${r.highlight ? 'var(--fire)' : 'var(--border)'}`, color: r.highlight ? 'var(--fire)' : 'var(--muted)', whiteSpace: 'nowrap', flexShrink: 0 }}>
                       {r.tag}
                     </span>
                   )}
@@ -142,14 +142,14 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
 
         {/* ── Autres équipes ── */}
         {otherTeams.length > 0 && (
-          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'clamp(40px,6vw,64px)', marginBottom: 'clamp(40px,6vw,64px)' }}>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'clamp(32px,6vw,64px)', marginBottom: 'clamp(40px,6vw,64px)' }}>
             <div className="label-caps" style={{ marginBottom: '20px' }}>À découvrir aussi</div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1px', background: 'var(--border)', border: '1px solid var(--border)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1px', background: 'var(--border)', border: '1px solid var(--border)' }}>
               {otherTeams.map((t) => (
                 <Link key={t.slug} href={`/equipes/${t.slug}`} className="card-hover-bar"
-                  style={{ display: 'block', background: 'var(--white)', padding: 'clamp(20px,3vw,28px)', textDecoration: 'none', transition: 'background 0.2s' }}>
-                  <div style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--fire)', marginBottom: '6px' }}>{t.level}</div>
-                  <div style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: '20px', color: 'var(--ink)' }}>{t.name}</div>
+                  style={{ display: 'block', background: 'var(--white)', padding: 'clamp(18px, 3vw, 28px)', textDecoration: 'none', transition: 'background 0.2s' }}>
+                  <div style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: 'clamp(9px, 1.5vw, 10px)', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--fire)', marginBottom: '6px' }}>{t.level}</div>
+                  <div style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: 'clamp(18px, 3vw, 20px)', color: 'var(--ink)' }}>{t.name}</div>
                 </Link>
               ))}
             </div>
@@ -157,8 +157,8 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
         )}
 
         {/* CTA */}
-        <div style={{ background: 'var(--ink)', padding: 'clamp(28px,4vw,48px) clamp(20px,4vw,48px)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px', flexWrap: 'wrap' }}>
-          <p style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 400, fontSize: 'clamp(18px,3vw,22px)', color: 'white', fontStyle: 'italic' }}>
+        <div style={{ background: 'var(--ink)', padding: 'clamp(24px, 4vw, 48px) var(--px)', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'clamp(16px, 3vw, 24px)' }}>
+          <p style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 400, fontSize: 'clamp(16px, 3vw, 22px)', color: 'white', fontStyle: 'italic' }}>
             Envie de rejoindre {team.name} ?
           </p>
           <HoverAnchor href="/inscriptions" base={ctaBase} hovered={ctaHovered}>
