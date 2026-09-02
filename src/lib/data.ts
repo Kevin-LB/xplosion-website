@@ -1,6 +1,7 @@
 export const NAV_LINKS = [
   { label: 'Le Club', href: '/#club' },
   { label: 'Nos Équipes', href: '/equipes' },
+  { label: 'Actualités', href: '/actualites' },
   { label: 'Palmarès', href: '/palmares' },
   { label: 'Entraînements', href: '/entrainements' },
   { label: 'Événements', href: '/evenements' },
@@ -256,6 +257,22 @@ export const VALUES = [
     title: 'Ambition internationale',
     description: "Compétitions en France, en Europe et à l'internationale : Xplosion s'est imposé sur la scène mondiale du cheerleading.",
   },
+]
+
+export type BureauMember = {
+  name: string
+  role: string
+  since: string
+  note?: string
+  photo: string
+}
+
+export const BUREAU: BureauMember[] = [
+  { name: 'Marion Guiougou', role: 'Présidente', since: 'décembre 2014', note: 'Co-fondatrice', photo: '/images/marion.png' },
+  { name: 'Nathalie Robert', role: 'Trésorière', since: 'février 2021', photo: '/images/nathalie.png' },
+  { name: 'Anaïs Santos', role: 'Secrétaire', since: 'mars 2023', photo: '/images/anais.png' },
+  { name: 'Johanne Guiougou', role: 'Secrétaire', since: 'décembre 2014', note: 'Co-fondatrice', photo: '/images/johanne.png' },
+  { name: 'Mélanie Pavy', role: 'Vice-trésorière', since: 'février 2026', photo: '/images/melanie.png' },
 ]
 
 export const CLUB_INFO = {

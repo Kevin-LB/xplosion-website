@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: xplosion
+      POSTGRES_PASSWORD: xplosion
+      POSTGRES_DB: xplosion
+    ports:
+      - '5432:5432'
+    volumes:
+      - xplosion_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U xplosion']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  xplosion_db_data:

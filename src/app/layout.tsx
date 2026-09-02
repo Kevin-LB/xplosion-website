@@ -1,8 +1,7 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Barlow, Barlow_Condensed } from 'next/font/google'
 import './globals.css'
-import { Navbar } from '@/components/layout/Navbar'
-import { Footer } from '@/components/layout/Footer'
+import { SiteChrome } from '@/components/layout/SiteChrome'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -33,8 +32,11 @@ export const metadata: Metadata = {
   },
   description:
     "Club de cheerleading All-Star basé à Orléans. Champions de France, qualifiés aux All Star Worlds. Rejoignez l'aventure Xplosion.",
-  // Viewport via Next.js metadata — pas besoin de balise manuelle
-  viewport: 'width=device-width, initial-scale=1',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -57,9 +59,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           padding: 0,
         }}
       >
-        <Navbar />
-        <main style={{ overflowX: 'hidden' }}>{children}</main>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   )

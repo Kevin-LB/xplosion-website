@@ -1,15 +1,8 @@
 import type { Metadata } from 'next'
 import { MemberPhoto } from '@/components/ui/MemberPhoto'
+import { BUREAU } from '@/lib/data'
 
 export const metadata: Metadata = { title: 'Organisation de la Section' }
-
-const BUREAU = [
-  { name: 'Marion Guiougou', role: 'Présidente', since: 'décembre 2014', note: 'Co-fondatrice', photo: '/images/marion.png' },
-  { name: 'Nathalie Robert', role: 'Trésorière', since: 'février 2021', photo: '/images/nathalie.png' },
-  { name: 'Anaïs Santos', role: 'Secrétaire', since: 'mars 2023', photo: '/images/anais.png' },
-  { name: 'Johanne Guiougou', role: 'Secrétaire', since: 'décembre 2014', note: 'Co-fondatrice', photo: '/images/johanne.png' },
-  { name: 'Mélanie Pavy', role: 'Vice-trésorière', since: 'février 2026', photo: '/images/melanie.png' },
-]
 
 const COMITES = [
   { name: 'Partenariats', icon: '🤝', desc: 'Développement et gestion des relations avec les sponsors et partenaires locaux.' },

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 
 export const metadata: Metadata = {
   title: 'Événements',
@@ -170,7 +171,7 @@ export default function EvenementsPage() {
                   <div key={event.title} style={{ background: 'var(--white)', borderLeft: `3px solid ${cat.color}`, overflow: 'hidden' }}>
                     {/* Photo */}
                     <div style={{ position: 'relative', height: '160px', overflow: 'hidden', background: 'var(--cream-2)' }}>
-                      <img src={event.photo} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      <Image src={event.photo} alt={event.title} fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
                       {event.recurrent && (
                         <span style={{ position: 'absolute', top: '10px', right: '10px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '9px', letterSpacing: '1.5px', textTransform: 'uppercase', padding: '3px 9px', background: cat.color, color: 'white' }}>
                           Récurrent

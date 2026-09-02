@@ -2,9 +2,31 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { NAV_LINKS } from '@/lib/data'
+
+function LoginLink() {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <Link href="/login"
+      aria-label="Se connecter"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0,
+        background: hovered ? 'var(--fire)' : 'var(--ink)',
+        transition: 'background 0.25s',
+      }}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    </Link>
+  )
+}
 
 function NavCta() {
   const [hovered, setHovered] = useState(false)
@@ -69,7 +91,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" onClick={() => setMenuOpen(false)}
           style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px', flexShrink: 0, minWidth: 0 }}>
-          <img src="/images/logo.png" alt="Xplosion"
+          <Image src="/images/logo.png" alt="Xplosion" width={745} height={564} priority
             style={{ height: '34px', width: 'auto', objectFit: 'contain', display: 'block', flexShrink: 0 }} />
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, minWidth: 0 }}>
             <span style={{ fontFamily: 'var(--font-playfair), serif', fontWeight: 700, fontSize: '16px', letterSpacing: '1.5px', textTransform: 'uppercase', color: 'var(--ink)', whiteSpace: 'nowrap' }}>Xplosion</span>
@@ -87,7 +109,10 @@ export function Navbar() {
             }}>{link.label}</Link>
           ))}
         </nav>
-        <div className="hide-mobile"><NavCta /></div>
+        <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <LoginLink />
+          <NavCta />
+        </div>
 
         {/* Burger / Croix */}
         <button
@@ -166,8 +191,16 @@ export function Navbar() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
               style={{ padding: '24px', borderTop: '1px solid var(--border-light)' }}>
               <Link href="/inscriptions" onClick={() => setMenuOpen(false)}
-                style={{ display: 'block', textAlign: 'center', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', background: 'var(--fire)', color: 'white', padding: '16px', textDecoration: 'none', marginBottom: '20px' }}>
+                style={{ display: 'block', textAlign: 'center', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '13px', letterSpacing: '2px', textTransform: 'uppercase', background: 'var(--fire)', color: 'white', padding: '16px', textDecoration: 'none', marginBottom: '12px' }}>
                 Rejoindre le Club →
+              </Link>
+              <Link href="/login" onClick={() => setMenuOpen(false)}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--ink)', border: '1px solid var(--border)', padding: '14px', textDecoration: 'none', marginBottom: '20px' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                Se connecter
               </Link>
               <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
                 {[

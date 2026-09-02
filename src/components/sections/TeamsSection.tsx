@@ -1,18 +1,19 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { TEAMS } from '@/lib/data'
+import type { Team } from '@/lib/data'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 
-export function TeamsSection() {
+export function TeamsSection({ teams }: { teams: Team[] }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
   const isMobile = useIsMobile()
 
   // Page d'accueil : uniquement les équipes "active" (pas les GS, pas les loisirs)
-  const featured = TEAMS.filter((t) => t.status === 'active')
+  const featured = teams.filter((t) => t.status === 'active')
 
   return (
     <section style={{ background: 'var(--cream)', padding: `var(--py) var(--px)` }}>
@@ -44,7 +45,7 @@ export function TeamsSection() {
                 style={{ display: 'block', background: 'var(--white)', textDecoration: 'none', position: 'relative', overflow: 'hidden', borderLeft: '3px solid var(--fire)' }}>
                 {team.photo && (
                   <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
-                    <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    <Image src={team.photo} alt={team.name} fill sizes="100vw" style={{ objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--white) 0%, transparent 60%)' }} />
                   </div>
                 )}
@@ -74,7 +75,7 @@ export function TeamsSection() {
                 style={{ display: 'block', background: 'var(--cream)', textDecoration: 'none', position: 'relative', overflow: 'hidden', height: '100%' }}>
                 {team.photo && (
                   <div style={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
-                    <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    <Image src={team.photo} alt={team.name} fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--cream) 0%, transparent 50%)' }} />
                   </div>
                 )}

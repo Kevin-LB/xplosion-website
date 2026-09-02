@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import { CLUB_INFO } from '@/lib/data'
 import { HoverDiv, HoverAnchor } from '@/components/ui/Hover'
 
@@ -46,7 +47,7 @@ export default function PartenairesPage() {
           {INSTITUTIONAL.map((p) => (
             <div key={p.name} style={{ background: 'var(--white)', padding: 'clamp(24px,3vw,40px) clamp(20px,3vw,32px)' }}>
               {p.logo && (
-                <img src={p.logo} alt={p.name}
+                <Image src={p.logo} alt={p.name} width={2571} height={1793}
                   style={{ height: '48px', width: 'auto', objectFit: 'contain', display: 'block', marginBottom: '16px', filter: 'none' }} />
               )}
               <div style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--fire)', marginBottom: '8px' }}>

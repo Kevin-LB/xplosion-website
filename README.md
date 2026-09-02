@@ -1,26 +1,10 @@
-# Xplosion Website — Setup
+# Xplosion Website
 
-## ⚠️ Fix the broken npm state first
+Site du club Xplosion Cheerleaders Orléans : vitrine publique + espaces privés (Bureau / Coachs) avec base de données.
 
-The `npm audit fix --force` downgraded Next.js to v9. Fix it by deleting everything and reinstalling:
-
-```bash
-# 1. Go into the project folder
-cd /Users/kevlb/Desktop/PROJET/XPLOSION/xplosion-website
-
-# 2. Delete broken deps and lock file
-rm -rf node_modules package-lock.json
-
-# 3. Replace package.json with the correct one (copy from files provided)
-
-# 4. Clean install
-npm install
-
-# 5. Launch dev server
-npm run dev
-```
-
-Then open http://localhost:3000
+**Pour relancer le projet après avoir éteint ton PC** → [GUIDE_RELANCE.md](./GUIDE_RELANCE.md)
+**Pour l'installation complète, les migrations, le déploiement** → [GUIDE_DEMARRAGE.md](./GUIDE_DEMARRAGE.md)
+**Pour apprendre à utiliser l'espace Bureau/Coach (comptes, équipes, actualités, homeworks)** → [GUIDE_UTILISATEUR.md](./GUIDE_UTILISATEUR.md)
 
 ---
 
@@ -73,3 +57,11 @@ src/
 | `--gold` | #B8963E | Champion rank |
 | `--muted` | #8A8680 | Secondary text |
 | `--border` | #DDD9D2 | Dividers |
+
+---
+
+## Back-end, authentification & portails privés
+
+Le site est une application dynamique : Postgres (via Prisma) pour les données, Auth.js (NextAuth v5) pour l'authentification par identifiant + mot de passe, avec deux rôles (`ADMIN` = bureau, `COACH` = entraîneur) et deux portails privés (`/admin`, `/coach`).
+
+Toutes les commandes (installation, migrations, dépannage, déploiement) sont dans [GUIDE_DEMARRAGE.md](./GUIDE_DEMARRAGE.md). Le fonctionnement de l'appli côté utilisateur (créer des comptes, gérer les équipes/actualités/homeworks) est dans [GUIDE_UTILISATEUR.md](./GUIDE_UTILISATEUR.md).

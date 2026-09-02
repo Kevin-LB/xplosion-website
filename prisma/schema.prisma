@@ -1,0 +1,162 @@
+// Schéma Prisma — Xplosion Cheerleaders Orléans
+// Auth par Credentials (identifiant + mot de passe) + sessions JWT :
+// pas besoin des tables Account/Session/VerificationToken de l'adapter
+// Auth.js standard. Si un jour on ajoute une connexion Google/Instagram,
+// il faudra les rajouter (voir doc @auth/prisma-adapter).
+//
+// Comptes créés uniquement par un admin (pas d'auto-inscription) avec un
+// mot de passe provisoire. `mustChangePassword` force l'utilisateur à en
+// choisir un nouveau à sa première connexion.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN // Bureau : gère équipes + actualités
+  COACH // Entraîneur : gère ses athlètes + homeworks
+}
+
+enum TeamStatus {
+  ACTIVE // Équipe compétition
+  GS // Group Stunt / Partner Stunt
+  LOISIRS
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  username           String   @unique
+  passwordHash       String
+  name               String
+  // Intitulé affiché à côté du nom (ex: "Présidente", "Trésorière").
+  // Pour un coach, si vide, on affiche automatiquement "Coach <équipes>".
+  title              String?
+  role               Role
+  mustChangePassword Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  coachedTeams   Team[]          @relation("TeamCoaches")
+  newsArticles   News[]
+  homeworkWeeks  HomeworkWeek[]
+
+  @@map("users")
+}
+
+model Team {
+  id              String     @id @default(cuid())
+  slug            String     @unique
+  name            String
+  level           String
+  category        String
+  description     String
+  longDescription String?    @db.Text
+  badge           String?
+  status          TeamStatus
+  photo           String?
+  gallery         String[]   @default([])
+  trainingDays    String[]   @default([])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  coaches       User[]         @relation("TeamCoaches")
+  athletes      Athlete[]
+  homeworkWeeks HomeworkWeek[]
+
+  @@map("teams")
+}
+
+model Athlete {
+  id        String    @id @default(cuid())
+  firstName String
+  lastName  String
+  // Poste dans l'équipe (ex: "Flyer", "Base", "Back spot", "Tumbler") —
+  // équivalent de la colonne "Rôle" du tableau Excel du club.
+  position  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  homeworkCompletions HomeworkCompletion[]
+
+  @@index([teamId])
+  @@map("athletes")
+}
+
+model News {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  excerpt     String?
+  content     String    @db.Text
+  coverImage  String?
+  gallery     String[]  @default([])
+  published   Boolean   @default(false)
+  // Peut être dans le futur : sert à programmer une publication. La page
+  // publique n'affiche que published=true ET publishedAt <= maintenant.
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([published, publishedAt])
+  @@map("news")
+}
+
+// ── Homeworks (Phase 4) ──────────────────────────────────────
+// Modèle calqué sur le tableau Excel du club : pour une équipe et une
+// semaine donnée, une liste d'exercices (colonnes) et, pour chaque
+// athlète (ligne), une case cochée ou non par exercice. Le pourcentage
+// de complétion par athlète se calcule à l'affichage (pas stocké).
+model HomeworkWeek {
+  id        String   @id @default(cuid())
+  weekStart DateTime
+  createdAt DateTime @default(now())
+
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  exercises HomeworkExercise[]
+
+  @@unique([teamId, weekStart])
+  @@map("homework_weeks")
+}
+
+model HomeworkExercise {
+  id    String @id @default(cuid())
+  label String
+  order Int    @default(0)
+
+  weekId String
+  week   HomeworkWeek @relation(fields: [weekId], references: [id], onDelete: Cascade)
+
+  completions HomeworkCompletion[]
+
+  @@map("homework_exercises")
+}
+
+model HomeworkCompletion {
+  id          String    @id @default(cuid())
+  done        Boolean   @default(false)
+  completedAt DateTime?
+
+  exerciseId String
+  exercise   HomeworkExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+
+  athleteId String
+  athlete   Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([exerciseId, athleteId])
+  @@map("homework_completions")
+}

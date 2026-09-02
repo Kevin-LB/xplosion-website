@@ -7,13 +7,18 @@ import {
   CtaBand,
   PartnersSection,
 } from '@/components/sections/Sections'
+import { getTeams } from '@/lib/teams'
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  const teams = await getTeams()
+
   return (
     <>
       <Hero />
       <Ticker />
-      <TeamsSection />
+      <TeamsSection teams={teams} />
       <PalmaresSection />
       <DisciplineSection />
       <ValuesSection />

@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { TEAMS, RESULTS } from '@/lib/data'
+import Image from 'next/image'
+import { RESULTS } from '@/lib/data'
+import { getTeams, getTeamBySlug } from '@/lib/teams'
 import { HoverLink, HoverAnchor } from '@/components/ui/Hover'
 
-export async function generateStaticParams() {
-  return TEAMS.map((t) => ({ slug: t.slug }))
-}
+export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
-  const team = TEAMS.find((t) => t.slug === slug)
+  const team = await getTeamBySlug(slug)
   return { title: team ? team.name : 'Équipe' }
 }
 
@@ -19,11 +19,12 @@ const ctaHovered = { background: 'var(--fire)' }
 
 export default async function TeamDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const team = TEAMS.find((t) => t.slug === slug)
+  const team = await getTeamBySlug(slug)
   if (!team) notFound()
 
+  const allTeams = await getTeams()
   const results = RESULTS.filter((r) => r.team === team.name)
-  const otherTeams = TEAMS.filter((t) => t.slug !== team.slug && t.status === team.status).slice(0, 3)
+  const otherTeams = allTeams.filter((t) => t.slug !== team.slug && t.status === team.status).slice(0, 3)
 
   const sectionLabel =
     team.status === 'active' ? 'Équipe compétition' :
@@ -57,7 +58,7 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
           {/* Photo */}
           {team.photo && (
             <div style={{ position: 'relative', minHeight: '280px' }}>
-              <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <Image src={team.photo} alt={team.name} fill priority sizes="(max-width: 768px) 100vw, 50vw" style={{ objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, var(--cream) 0%, transparent 30%)' }} />
             </div>
           )}
@@ -103,8 +104,8 @@ export default async function TeamDetailPage({ params }: { params: Promise<{ slu
             <div className="label-caps" style={{ marginBottom: '20px' }}>Galerie</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: 'clamp(10px, 2vw, 12px)' }}>
               {team.gallery.map((img, i) => (
-                <div key={i} style={{ aspectRatio: '4/3', overflow: 'hidden', background: 'var(--cream-2)' }}>
-                  <img src={img} alt={`${team.name} ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                <div key={i} style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: 'var(--cream-2)' }}>
+                  <Image src={img} alt={`${team.name} ${i + 1}`} fill sizes="(max-width: 768px) 50vw, 20vw" style={{ objectFit: 'cover' }} />
                 </div>
               ))}
             </div>

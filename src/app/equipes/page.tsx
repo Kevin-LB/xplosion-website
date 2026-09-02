@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { TEAMS } from '@/lib/data'
+import Image from 'next/image'
+import { getTeams } from '@/lib/teams'
+import type { Team } from '@/lib/data'
+
+export const dynamic = 'force-dynamic'
 import { HoverLink, HoverAnchor } from '@/components/ui/Hover'
 
 export const metadata: Metadata = { title: 'Nos Équipes' }
@@ -10,13 +14,13 @@ const btnHovered = { background: 'var(--fire)' }
 const tryoutBase = { display: 'inline-block', fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 600, fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase' as const, background: 'white', color: 'var(--fire)', padding: '14px 36px', textDecoration: 'none', transition: 'background 0.2s', flexShrink: 0 as const }
 const tryoutHovered = { background: 'var(--cream)' }
 
-function TeamCard({ team }: { team: (typeof TEAMS)[0] }) {
+function TeamCard({ team }: { team: Team }) {
   return (
     <Link href={`/equipes/${team.slug}`} className="card-hover-bar"
       style={{ display: 'block', background: 'var(--white)', position: 'relative', textDecoration: 'none', transition: 'background 0.2s' }}>
       {team.photo && (
         <div style={{ position: 'relative', height: '180px', overflow: 'hidden' }}>
-          <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          <Image src={team.photo} alt={team.name} fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, var(--white) 0%, transparent 50%)' }} />
         </div>
       )}
@@ -37,13 +41,13 @@ function TeamCard({ team }: { team: (typeof TEAMS)[0] }) {
   )
 }
 
-function GsCard({ team }: { team: (typeof TEAMS)[0] }) {
+function GsCard({ team }: { team: Team }) {
   return (
     <Link href={`/equipes/${team.slug}`}
       style={{ display: 'block', background: 'var(--cream)', textDecoration: 'none', position: 'relative', overflow: 'hidden' }}>
       {team.photo && (
         <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
-          <img src={team.photo} alt={team.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          <Image src={team.photo} alt={team.name} fill sizes="(max-width: 768px) 100vw, 25vw" style={{ objectFit: 'cover' }} />
         </div>
       )}
       <div style={{ padding: 'clamp(20px,2.5vw,28px) clamp(16px,2vw,24px)' }}>
@@ -61,7 +65,8 @@ function GsCard({ team }: { team: (typeof TEAMS)[0] }) {
   )
 }
 
-export default function EquipesPage() {
+export default async function EquipesPage() {
+  const TEAMS = await getTeams()
   const mainTeams = TEAMS.filter((t) => t.status === 'active')
   const gsTeams   = TEAMS.filter((t) => t.status === 'gs')
   const loisirs   = TEAMS.filter((t) => t.status === 'loisirs')

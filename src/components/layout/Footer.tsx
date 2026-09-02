@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { HoverLink, HoverAnchor } from '@/components/ui/Hover'
 import { CLUB_INFO } from '@/lib/data'
 
@@ -68,7 +69,7 @@ export function Footer() {
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-            <img src="/images/asptt.png" alt="ASPTT Orléans"
+            <Image src="/images/asptt.png" alt="ASPTT Orléans" width={2571} height={1793}
               style={{ height: '56px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', opacity: 0.85 }} />
             <span style={{ fontFamily: 'var(--font-barlow-condensed), sans-serif', fontWeight: 500, fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)' }}>
               Section Cheerleading

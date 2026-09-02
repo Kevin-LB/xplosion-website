@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+/* Tailwind utility tokens (bg-fire, text-ink, border-cream…) — for new code only
+   (admin/coach portals). Values duplicated from :root below; keep in sync until
+   the public pages are migrated off inline styles. */
+@theme {
+  --color-cream:        #F5F2EE;
+  --color-cream-2:      #EDE9E3;
+  --color-cream-3:      #E4DED6;
+  --color-white:        #FAFAF8;
+  --color-ink:          #1A1A1A;
+  --color-ink-2:        #3D3D3D;
+  --color-muted:        #8A8680;
+  --color-fire:         #C8401A;
+  --color-fire-light:   #E05A2B;
+  --color-gold:         #B8963E;
+  --color-border:       #DDD9D2;
+  --color-border-light: #ECEAE5;
+}
+
 :root {
   --cream:        #F5F2EE;
   --cream-2:      #EDE9E3;

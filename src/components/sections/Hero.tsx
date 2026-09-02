@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { TICKER_ITEMS } from '@/lib/data'
@@ -26,8 +27,8 @@ export function Hero() {
         {/* Full-screen photo on mobile */}
         <div style={{ position: 'absolute', inset: 0 }}>
           {!imgError ? (
-            <img src="/images/xplosion.jpg" alt="Xplosion Cheerleaders"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+            <Image src="/images/xplosion.jpg" alt="Xplosion Cheerleaders" fill priority sizes="100vw"
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
               onError={() => setImgError(true)} />
           ) : (
             <div style={{ width: '100%', height: '100%', background: 'var(--cream)' }} />
@@ -111,8 +112,8 @@ export function Hero() {
 
       <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '62%', overflow: 'hidden' }}>
         {!imgError ? (
-          <img src="/images/xplosion.jpg" alt="Xplosion Cheerleaders"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }}
+          <Image src="/images/xplosion.jpg" alt="Xplosion Cheerleaders" fill priority sizes="62vw"
+            style={{ objectFit: 'cover', objectPosition: 'center top' }}
             onError={() => setImgError(true)} />
         ) : (
           <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--cream-2) 0%, var(--cream-3) 100%)' }} />
