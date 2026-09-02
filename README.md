@@ -3,8 +3,9 @@
 Site du club Xplosion Cheerleaders Orléans : vitrine publique + espaces privés (Bureau / Coachs) avec base de données.
 
 **Pour relancer le projet après avoir éteint ton PC** → [GUIDE_RELANCE.md](./GUIDE_RELANCE.md)
-**Pour l'installation complète, les migrations, le déploiement** → [GUIDE_DEMARRAGE.md](./GUIDE_DEMARRAGE.md)
+**Pour l'installation complète, les migrations** → [GUIDE_DEMARRAGE.md](./GUIDE_DEMARRAGE.md)
 **Pour apprendre à utiliser l'espace Bureau/Coach (comptes, équipes, actualités, homeworks)** → [GUIDE_UTILISATEUR.md](./GUIDE_UTILISATEUR.md)
+**Pour déployer sur le VPS via Dokploy** → [GUIDE_DEPLOIEMENT.md](./GUIDE_DEPLOIEMENT.md)
 
 ---
 

@@ -130,14 +130,13 @@ npm run db:seed
 
 ## Déploiement sur le VPS
 
-`docker-compose.yml` ne contient pour l'instant que le service Postgres — pratique pour le développement, pas suffisant pour la prod. Avant de déployer sur le VPS, il faudra :
+Un `Dockerfile` de production existe (build Next.js `standalone`, testé en local). `docker-compose.yml` ne contient que le service Postgres — pratique pour le développement, l'app elle-même se déploie via Dokploy plutôt que rajoutée à ce compose. Marche à suivre complète → [GUIDE_DEPLOIEMENT.md](./GUIDE_DEPLOIEMENT.md).
 
-1. Ajouter un service pour l'app Next.js elle-même dans `docker-compose.yml` (image buildée depuis un `Dockerfile`, à créer)
-2. Définir un vrai `AUTH_SECRET` et `AUTH_URL` (l'URL publique du site) dans les variables d'environnement de prod
-3. Sur le serveur, utiliser `prisma migrate deploy` (pas `migrate dev`, qui est fait pour le développement) pour appliquer les migrations sans prompt interactif
-4. Ne **jamais** committer le fichier `.env` réel (déjà dans `.gitignore`)
-
-Cette partie n'est pas encore faite — à prévoir avant la mise en ligne.
+Points clés :
+- Un vrai `AUTH_SECRET` (différent de celui du local) et `AUTH_URL` (URL publique du site) en variables d'environnement de prod
+- Sur le serveur, `prisma migrate deploy` (pas `migrate dev`, fait pour le développement) pour appliquer les migrations sans prompt interactif
+- Ne **jamais** committer le fichier `.env` réel (déjà dans `.gitignore`)
+- Prévoir un volume persistant pour `public/images/` (voir le guide de déploiement) — sinon les photos uploadées disparaissent à chaque redéploiement
 
 ## Stack technique
 
