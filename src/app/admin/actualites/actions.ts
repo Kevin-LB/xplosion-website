@@ -141,3 +141,56 @@ export async function createNewsAsCoach(formData: FormData) {
   revalidatePath('/actualites')
   redirect('/coach/actualites')
 }
+
+// Un coach voit et gère les actualités de tous les coachs, mais pas les
+// brouillons/programmées des admins (seulement leurs publiées) — ce garde
+// s'applique en plus de requireCoachOrAdmin pour couvrir un accès direct
+// par URL, pas seulement le masquage dans la liste.
+async function assertCoachCanEditNews(newsId: string, role: string) {
+  if (role === 'ADMIN') return
+  const existing = await prisma.news.findUnique({
+    where: { id: newsId },
+    select: { published: true, author: { select: { role: true } } },
+  })
+  if (!existing) throw new Error('Actualité introuvable')
+  if (existing.author.role === 'ADMIN' && !existing.published) {
+    throw new Error('Non autorisé')
+  }
+}
+
+export async function updateNewsAsCoach(newsId: string, formData: FormData) {
+  const session = await requireCoachOrAdmin()
+  await assertCoachCanEditNews(newsId, session.user.role)
+
+  const existing = await prisma.news.findUnique({ where: { id: newsId }, select: { publishedAt: true } })
+  const { published, publishedAt } = resolvePublishState(formData, existing?.publishedAt ?? null)
+  const coverImage = await resolveCoverImage(formData)
+  const gallery = await resolveGallery(formData)
+
+  await prisma.news.update({
+    where: { id: newsId },
+    data: {
+      title: String(formData.get('title') ?? ''),
+      excerpt: String(formData.get('excerpt') ?? '') || null,
+      content: String(formData.get('content') ?? ''),
+      coverImage,
+      gallery,
+      published,
+      publishedAt,
+    },
+  })
+
+  revalidatePath('/coach/actualites')
+  revalidatePath('/actualites')
+  redirect('/coach/actualites')
+}
+
+export async function deleteNewsAsCoach(newsId: string) {
+  const session = await requireCoachOrAdmin()
+  await assertCoachCanEditNews(newsId, session.user.role)
+
+  await prisma.news.delete({ where: { id: newsId } })
+  revalidatePath('/coach/actualites')
+  revalidatePath('/actualites')
+  redirect('/coach/actualites')
+}

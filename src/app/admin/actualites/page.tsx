@@ -30,7 +30,13 @@ export default async function AdminNewsPage() {
 
   return (
     <div className="max-w-[1600px]">
-      <NewsSearchSections drafts={drafts} scheduled={scheduled} published={published} deleteAction={deleteNews} />
+      <NewsSearchSections
+        drafts={drafts}
+        scheduled={scheduled}
+        published={published}
+        deleteAction={deleteNews}
+        basePath="/admin/actualites"
+      />
     </div>
   )
 }

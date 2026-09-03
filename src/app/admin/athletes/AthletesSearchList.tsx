@@ -11,7 +11,7 @@ type AthleteRow = {
   teamNames: string[]
 }
 
-export function AthletesSearchList({ athletes }: { athletes: AthleteRow[] }) {
+export function AthletesSearchList({ athletes, basePath }: { athletes: AthleteRow[]; basePath: string }) {
   const [query, setQuery] = useState('')
   const filtered = query
     ? athletes.filter((a) => a.name.toLowerCase().includes(query.toLowerCase()))
@@ -31,7 +31,7 @@ export function AthletesSearchList({ athletes }: { athletes: AthleteRow[] }) {
         {filtered.map((athlete) => (
           <Link
             key={athlete.id}
-            href={`/admin/athletes/${athlete.id}`}
+            href={`${basePath}/${athlete.id}`}
             className="flex items-center justify-between px-5 py-4 hover:bg-cream transition-colors gap-4"
           >
             <div className="min-w-0">

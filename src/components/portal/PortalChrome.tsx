@@ -12,6 +12,7 @@ const ADMIN_NAV = [
 const COACH_NAV = [
   { label: 'Tableau de bord', href: '/coach' },
   { label: 'Équipes', href: '/coach/equipes' },
+  { label: 'Athlètes', href: '/coach/athletes' },
   { label: 'Actualités', href: '/coach/actualites' },
   { label: 'Homeworks', href: '/coach/homeworks' },
 ]

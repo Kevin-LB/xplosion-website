@@ -11,7 +11,15 @@ type NewsRow = {
   scheduledLabel: string | null
 }
 
-function NewsRowItem({ article, deleteAction }: { article: NewsRow; deleteAction: (id: string) => Promise<void> }) {
+function NewsRowItem({
+  article,
+  deleteAction,
+  basePath,
+}: {
+  article: NewsRow
+  deleteAction: (id: string) => Promise<void>
+  basePath: string
+}) {
   return (
     <div className="flex items-center justify-between px-5 py-4">
       <div className="min-w-0">
@@ -22,7 +30,7 @@ function NewsRowItem({ article, deleteAction }: { article: NewsRow; deleteAction
         </div>
       </div>
       <div className="flex items-center gap-4 shrink-0">
-        <Link href={`/admin/actualites/${article.id}`} className="text-sm text-ink underline underline-offset-2">
+        <Link href={`${basePath}/${article.id}`} className="text-sm text-ink underline underline-offset-2">
           Modifier
         </Link>
         <form action={deleteAction.bind(null, article.id)}>
@@ -39,10 +47,12 @@ function Section({
   title,
   items,
   deleteAction,
+  basePath,
 }: {
   title: string
   items: NewsRow[]
   deleteAction: (id: string) => Promise<void>
+  basePath: string
 }) {
   return (
     <details className="group mb-6" open>
@@ -60,7 +70,7 @@ function Section({
       </summary>
       <div className="border border-border divide-y divide-border bg-white">
         {items.map((article) => (
-          <NewsRowItem key={article.id} article={article} deleteAction={deleteAction} />
+          <NewsRowItem key={article.id} article={article} deleteAction={deleteAction} basePath={basePath} />
         ))}
         {items.length === 0 && <p className="px-5 py-6 text-sm text-muted">Rien ici pour l&apos;instant.</p>}
       </div>
@@ -73,11 +83,13 @@ export function NewsSearchSections({
   scheduled,
   published,
   deleteAction,
+  basePath,
 }: {
   drafts: NewsRow[]
   scheduled: NewsRow[]
   published: NewsRow[]
   deleteAction: (id: string) => Promise<void>
+  basePath: string
 }) {
   const [query, setQuery] = useState('')
   const q = query.toLowerCase()
@@ -96,7 +108,7 @@ export function NewsSearchSections({
             className="w-full max-w-sm border border-border px-3 py-2 text-sm focus:outline-none focus:border-ink bg-white"
           />
           <Link
-            href="/admin/actualites/nouvelle"
+            href={`${basePath}/nouvelle`}
             className="bg-ink text-white text-sm font-medium px-4 py-2 hover:bg-fire transition-colors shrink-0"
           >
             + Nouvelle actualité
@@ -104,9 +116,9 @@ export function NewsSearchSections({
         </div>
       </div>
 
-      <Section title="Brouillons" items={drafts.filter(matches)} deleteAction={deleteAction} />
-      <Section title="Programmées" items={scheduled.filter(matches)} deleteAction={deleteAction} />
-      <Section title="Publiées" items={published.filter(matches)} deleteAction={deleteAction} />
+      <Section title="Brouillons" items={drafts.filter(matches)} deleteAction={deleteAction} basePath={basePath} />
+      <Section title="Programmées" items={scheduled.filter(matches)} deleteAction={deleteAction} basePath={basePath} />
+      <Section title="Publiées" items={published.filter(matches)} deleteAction={deleteAction} basePath={basePath} />
     </div>
   )
 }

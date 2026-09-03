@@ -20,6 +20,16 @@ export async function addAthlete(teamId: string, formData: FormData) {
   revalidatePath(`/coach/equipes/${teamId}`)
 }
 
+export async function attachExistingAthlete(teamId: string, athleteId: string) {
+  const session = await requireCoachOrAdmin()
+  await assertCanAccessTeam(teamId, session)
+
+  await prisma.team.update({ where: { id: teamId }, data: { athletes: { connect: { id: athleteId } } } })
+
+  revalidatePath(`/coach/equipes/${teamId}`)
+  revalidatePath('/coach/athletes')
+}
+
 // Retire l'athlète de cette équipe (ne supprime pas sa fiche — il peut
 // être affilié à d'autres équipes).
 export async function removeAthlete(athleteId: string, teamId: string) {

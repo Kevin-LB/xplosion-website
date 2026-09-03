@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
-import { AthletesSearchList } from './AthletesSearchList'
+import { AthletesSearchList } from '@/app/admin/athletes/AthletesSearchList'
 
 export const dynamic = 'force-dynamic'
 
-export default async function AdminAthletesPage() {
+export default async function CoachAthletesPage() {
   const athletes = await prisma.athlete.findMany({
     orderBy: { lastName: 'asc' },
     include: { teams: { select: { id: true, name: true } } },
@@ -15,7 +15,7 @@ export default async function AdminAthletesPage() {
       <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
         <h1 className="text-2xl font-bold text-ink">Athlètes</h1>
         <Link
-          href="/admin/athletes/nouveau"
+          href="/coach/athletes/nouveau"
           className="bg-ink text-white text-sm font-medium px-4 py-2 hover:bg-fire transition-colors"
         >
           + Nouvel athlète
@@ -23,7 +23,7 @@ export default async function AdminAthletesPage() {
       </div>
 
       <AthletesSearchList
-        basePath="/admin/athletes"
+        basePath="/coach/athletes"
         athletes={athletes.map((a) => ({
           id: a.id,
           name: `${a.firstName} ${a.lastName}`,
