@@ -11,7 +11,7 @@ export default async function AdminAthletesPage() {
   })
 
   return (
-    <div className="max-w-4xl">
+    <div className="max-w-[1600px]">
       <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
         <h1 className="text-2xl font-bold text-ink">Athlètes</h1>
         <Link

@@ -20,6 +20,19 @@ async function resolveGallery(formData: FormData): Promise<string[]> {
   return [...kept, ...uploaded]
 }
 
+// `slug` est unique en base : deux titres identiques (ou vides, en brouillon)
+// produiraient sinon le même slug et feraient planter la création.
+async function ensureUniqueSlug(title: string): Promise<string> {
+  const base = slugify(title) || 'actualite'
+  let slug = base
+  let attempt = 2
+  while (await prisma.news.findUnique({ where: { slug }, select: { id: true } })) {
+    slug = `${base}-${attempt}`
+    attempt += 1
+  }
+  return slug
+}
+
 // Le formulaire a 3 boutons ("Brouillon" / "Publier maintenant" /
 // "Programmer"), chacun soumettant un `intent` différent — plus fiable
 // qu'une case à cocher + une date à interpréter.
@@ -48,7 +61,7 @@ export async function createNews(formData: FormData) {
   await prisma.news.create({
     data: {
       title,
-      slug: slugify(title),
+      slug: await ensureUniqueSlug(title),
       excerpt: String(formData.get('excerpt') ?? '') || null,
       content: String(formData.get('content') ?? ''),
       coverImage,
@@ -95,6 +108,9 @@ export async function deleteNews(newsId: string) {
   await prisma.news.delete({ where: { id: newsId } })
   revalidatePath('/admin/actualites')
   revalidatePath('/actualites')
+  // Sans redirect, supprimer depuis la page de l'actualité elle-même la
+  // refait recharger — or elle n'existe plus, d'où un 404.
+  redirect('/admin/actualites')
 }
 
 // Un coach peut aussi publier une actualité (demande explicite) — même
@@ -110,7 +126,7 @@ export async function createNewsAsCoach(formData: FormData) {
   await prisma.news.create({
     data: {
       title,
-      slug: slugify(title),
+      slug: await ensureUniqueSlug(title),
       excerpt: String(formData.get('excerpt') ?? '') || null,
       content: String(formData.get('content') ?? ''),
       coverImage,

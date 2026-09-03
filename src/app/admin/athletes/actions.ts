@@ -54,4 +54,7 @@ export async function deleteAthlete(athleteId: string) {
   await requireAdmin()
   await prisma.athlete.delete({ where: { id: athleteId } })
   revalidatePath('/admin/athletes')
+  // Sans redirect, supprimer depuis la fiche de l'athlète la refait
+  // recharger — or elle n'existe plus, d'où un 404.
+  redirect('/admin/athletes')
 }

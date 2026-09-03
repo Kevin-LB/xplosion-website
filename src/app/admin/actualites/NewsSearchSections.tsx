@@ -45,17 +45,26 @@ function Section({
   deleteAction: (id: string) => Promise<void>
 }) {
   return (
-    <div className="mb-10">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-fire mb-3">
-        {title} ({items.length})
-      </h2>
+    <details className="group mb-6" open>
+      <summary className="flex items-center gap-2 list-none cursor-pointer select-none mb-3">
+        <span className="text-sm font-semibold uppercase tracking-wider text-fire">
+          {title} ({items.length})
+        </span>
+        <svg
+          viewBox="0 0 12 8"
+          className="w-2.5 h-2.5 fill-fire transition-transform group-open:rotate-180"
+          aria-hidden="true"
+        >
+          <path d="M1 1l5 5 5-5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </summary>
       <div className="border border-border divide-y divide-border bg-white">
         {items.map((article) => (
           <NewsRowItem key={article.id} article={article} deleteAction={deleteAction} />
         ))}
         {items.length === 0 && <p className="px-5 py-6 text-sm text-muted">Rien ici pour l&apos;instant.</p>}
       </div>
-    </div>
+    </details>
   )
 }
 
@@ -76,13 +85,24 @@ export function NewsSearchSections({
 
   return (
     <div>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Rechercher une actualité par titre…"
-        className="w-full max-w-sm border border-border px-3 py-2 text-sm mb-8 focus:outline-none focus:border-ink bg-white"
-      />
+      <div className="flex items-center justify-between gap-4 flex-wrap mb-8">
+        <h1 className="text-2xl font-bold text-ink shrink-0">Actualités</h1>
+        <div className="flex items-center gap-4 flex-1 justify-end flex-wrap">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Rechercher une actualité par titre…"
+            className="w-full max-w-sm border border-border px-3 py-2 text-sm focus:outline-none focus:border-ink bg-white"
+          />
+          <Link
+            href="/admin/actualites/nouvelle"
+            className="bg-ink text-white text-sm font-medium px-4 py-2 hover:bg-fire transition-colors shrink-0"
+          >
+            + Nouvelle actualité
+          </Link>
+        </div>
+      </div>
 
       <Section title="Brouillons" items={drafts.filter(matches)} deleteAction={deleteAction} />
       <Section title="Programmées" items={scheduled.filter(matches)} deleteAction={deleteAction} />

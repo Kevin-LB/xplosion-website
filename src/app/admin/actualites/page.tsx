@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { deleteNews } from './actions'
 import { NewsSearchSections } from './NewsSearchSections'
@@ -30,17 +29,7 @@ export default async function AdminNewsPage() {
   const published = news.filter((a) => a.published && (!a.publishedAt || a.publishedAt.getTime() <= now)).map(toRow)
 
   return (
-    <div className="max-w-4xl">
-      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
-        <h1 className="text-2xl font-bold text-ink">Actualités</h1>
-        <Link
-          href="/admin/actualites/nouvelle"
-          className="bg-ink text-white text-sm font-medium px-4 py-2 hover:bg-fire transition-colors"
-        >
-          + Nouvelle actualité
-        </Link>
-      </div>
-
+    <div className="max-w-[1600px]">
       <NewsSearchSections drafts={drafts} scheduled={scheduled} published={published} deleteAction={deleteNews} />
     </div>
   )

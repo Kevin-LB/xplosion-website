@@ -1,5 +1,6 @@
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { TagPicker } from '@/components/portal/TagPicker'
 import { createUser, resetPassword, deleteUser } from './actions'
 import { AccountsSearchList } from './AccountsSearchList'
 
@@ -10,16 +11,19 @@ const labelClass = 'block text-xs font-medium uppercase tracking-wider text-mute
 
 export default async function AdminUsersPage() {
   const session = await auth()
-  const users = await prisma.user.findMany({ orderBy: { createdAt: 'asc' } })
+  const [users, teams] = await Promise.all([
+    prisma.user.findMany({ orderBy: { createdAt: 'asc' } }),
+    prisma.team.findMany({ orderBy: { name: 'asc' }, select: { id: true, name: true } }),
+  ])
 
   return (
-    <div className="max-w-6xl">
+    <div className="max-w-[1600px]">
       <h1 className="text-2xl font-bold text-ink mb-8">Comptes</h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-10">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr]">
+        <section className="lg:pr-10">
           <h2 className="text-lg font-semibold text-ink mb-5">Nouveau compte</h2>
-          <form action={createUser} className="max-w-lg">
+          <form action={createUser}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
               <div>
                 <label className={labelClass}>Nom</label>
@@ -31,14 +35,29 @@ export default async function AdminUsersPage() {
               </div>
               <div>
                 <label className={labelClass}>Rôle</label>
-                <select name="role" defaultValue="COACH" className={inputClass}>
-                  <option value="COACH">Coach</option>
-                  <option value="ADMIN">Bureau</option>
-                </select>
+                <div className="flex items-center gap-5 h-[38px]">
+                  <label className="flex items-center gap-2 text-sm text-ink cursor-pointer">
+                    <input type="radio" name="role" value="COACH" defaultChecked className="accent-ink" />
+                    Coach
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-ink cursor-pointer">
+                    <input type="radio" name="role" value="ADMIN" className="accent-ink" />
+                    Bureau
+                  </label>
+                </div>
               </div>
               <div>
                 <label className={labelClass}>Intitulé (optionnel)</label>
                 <input name="title" placeholder="Présidente, Trésorière…" className={inputClass} />
+              </div>
+              <div className="sm:col-span-2">
+                <label className={labelClass}>Équipes encadrées (optionnel)</label>
+                <TagPicker
+                  name="teamIds"
+                  options={teams.map((t) => ({ id: t.id, label: t.name }))}
+                  initialSelectedIds={[]}
+                  placeholder="Rechercher une équipe…"
+                />
               </div>
               <div className="sm:col-span-2">
                 <label className={labelClass}>Mot de passe provisoire</label>
@@ -52,9 +71,10 @@ export default async function AdminUsersPage() {
               Créer le compte
             </button>
           </form>
-        </div>
+        </section>
 
-        <div>
+        <section className="mt-10 pt-10 border-t border-border lg:mt-0 lg:pt-0 lg:border-t-0 lg:border-l lg:pl-10">
+          <h2 className="text-lg font-semibold text-ink mb-5">Tout les comptes</h2>
           <AccountsSearchList
             users={users.map((u) => ({
               id: u.id,
@@ -63,12 +83,13 @@ export default async function AdminUsersPage() {
               roleLabel: u.role === 'ADMIN' ? 'Bureau' : 'Coach',
               title: u.title,
               mustChangePassword: u.mustChangePassword,
-              canDelete: u.id !== session?.user.id,
+              canDelete: u.id !== session?.user.id && u.username !== 'taga',
+              canReset: u.username !== 'taga',
             }))}
             resetAction={resetPassword}
             deleteAction={deleteUser}
           />
-        </div>
+        </section>
       </div>
     </div>
   )
