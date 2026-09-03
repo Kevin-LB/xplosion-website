@@ -15,16 +15,18 @@ export async function addAthlete(teamId: string, formData: FormData) {
   const position = String(formData.get('position') ?? '').trim() || null
   if (!firstName || !lastName) throw new Error('Prénom et nom requis')
 
-  await prisma.athlete.create({ data: { firstName, lastName, position, teamId } })
+  await prisma.athlete.create({ data: { firstName, lastName, position, teams: { connect: { id: teamId } } } })
 
   revalidatePath(`/coach/equipes/${teamId}`)
 }
 
+// Retire l'athlète de cette équipe (ne supprime pas sa fiche — il peut
+// être affilié à d'autres équipes).
 export async function removeAthlete(athleteId: string, teamId: string) {
   const session = await requireCoachOrAdmin()
   await assertCanAccessTeam(teamId, session)
 
-  await prisma.athlete.delete({ where: { id: athleteId } })
+  await prisma.team.update({ where: { id: teamId }, data: { athletes: { disconnect: { id: athleteId } } } })
 
   revalidatePath(`/coach/equipes/${teamId}`)
 }

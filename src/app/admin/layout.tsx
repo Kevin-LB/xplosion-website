@@ -6,6 +6,7 @@ import { SignOutButton } from '@/components/portal/SignOutButton'
 const NAV = [
   { label: 'Tableau de bord', href: '/admin' },
   { label: 'Équipes', href: '/admin/equipes' },
+  { label: 'Athlètes', href: '/admin/athletes' },
   { label: 'Actualités', href: '/admin/actualites' },
   { label: 'Comptes', href: '/admin/comptes' },
 ]

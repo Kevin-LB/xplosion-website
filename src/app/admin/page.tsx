@@ -4,34 +4,44 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboard() {
-  const [teams, news, coachCount] = await Promise.all([
+  const [teams, news, coachCount, athleteCount, weekCount] = await Promise.all([
     prisma.team.findMany({
       orderBy: { name: 'asc' },
-      include: {
-        athletes: true,
-        coaches: { select: { name: true } },
-      },
+      include: { coaches: { select: { name: true } } },
     }),
-    prisma.news.findMany({ orderBy: { createdAt: 'desc' }, take: 5, include: { author: { select: { name: true } } } }),
+    prisma.news.findMany({ orderBy: { createdAt: 'desc' }, include: { author: { select: { name: true } } } }),
     prisma.user.count({ where: { role: 'COACH' } }),
+    prisma.athlete.count(),
+    prisma.homeworkWeek.count(),
   ])
 
-  const athleteCount = teams.reduce((n, t) => n + t.athletes.length, 0)
-  const publishedCount = news.filter((n) => n.published).length
+  const now = Date.now()
+  const publishedCount = news.filter((n) => n.published && (!n.publishedAt || n.publishedAt.getTime() <= now)).length
+  const draftCount = news.filter((n) => !n.published).length
+  const scheduledCount = news.filter((n) => n.published && n.publishedAt && n.publishedAt.getTime() > now).length
+  const teamsWithoutCoachCount = teams.filter((t) => t.coaches.length === 0).length
+  const latestNews = news.slice(0, 3)
 
-  const cards = [
+  const mainCards = [
     { label: 'Équipes', value: teams.length, href: '/admin/equipes' },
-    { label: 'Athlètes', value: athleteCount, href: '/admin/equipes' },
+    { label: 'Athlètes', value: athleteCount, href: '/admin/athletes' },
     { label: 'Actualités publiées', value: publishedCount, href: '/admin/actualites' },
     { label: 'Comptes coach', value: coachCount, href: '/admin/comptes' },
+  ]
+
+  const secondaryCards = [
+    { label: 'Brouillons', value: draftCount, href: '/admin/actualites' },
+    { label: 'Programmées', value: scheduledCount, href: '/admin/actualites' },
+    { label: 'Équipes sans coach', value: teamsWithoutCoachCount, href: '/admin/equipes', warn: teamsWithoutCoachCount > 0 },
+    { label: 'Semaines de homework', value: weekCount, href: '/admin/equipes' },
   ]
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-ink mb-8">Tableau de bord</h1>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
-        {cards.map((card) => (
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
+        {mainCards.map((card) => (
           <Link
             key={card.label}
             href={card.href}
@@ -43,34 +53,43 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <h2 className="text-lg font-semibold text-ink mb-4">Équipes</h2>
-      <div className="border border-border bg-white divide-y divide-border mb-12 max-w-4xl">
-        {teams.map((team) => (
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+        {secondaryCards.map((card) => (
           <Link
-            key={team.id}
-            href={`/admin/equipes/${team.id}`}
-            className="flex items-center justify-between px-5 py-4 hover:bg-cream transition-colors gap-4"
+            key={card.label}
+            href={card.href}
+            className="border border-border bg-white px-5 py-4 hover:border-ink transition-colors"
           >
-            <div className="min-w-0">
-              <div className="font-semibold text-ink truncate">{team.name}</div>
-              <div className="text-xs text-muted truncate">
-                {team.athletes.length} athlète{team.athletes.length !== 1 ? 's' : ''} ·{' '}
-                {team.coaches.length > 0 ? (
-                  team.coaches.map((c) => c.name).join(', ')
-                ) : (
-                  <span className="text-fire">Aucun coach assigné</span>
-                )}
-              </div>
-            </div>
+            <div className={`text-xl font-bold mb-0.5 ${card.warn ? 'text-fire' : 'text-ink'}`}>{card.value}</div>
+            <div className="text-xs uppercase tracking-wider text-muted">{card.label}</div>
           </Link>
         ))}
-        {teams.length === 0 && <p className="px-5 py-8 text-sm text-muted">Aucune équipe pour l&apos;instant.</p>}
       </div>
 
-      <h2 className="text-lg font-semibold text-ink mb-4">Dernières actualités</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-ink">Équipes</h2>
+        <Link href="/admin/equipes" className="text-sm text-ink underline underline-offset-2">
+          Voir tout →
+        </Link>
+      </div>
+      <form action="/admin/equipes" method="get" className="mb-12 max-w-sm">
+        <input
+          type="text"
+          name="q"
+          placeholder="Rechercher une équipe…"
+          className="w-full border border-border px-3 py-2 text-sm focus:outline-none focus:border-ink bg-white"
+        />
+      </form>
+
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-ink">Dernières actualités</h2>
+        <Link href="/admin/actualites" className="text-sm text-ink underline underline-offset-2">
+          Voir tout →
+        </Link>
+      </div>
       <div className="border border-border bg-white divide-y divide-border max-w-4xl">
-        {news.map((article) => {
-          const isScheduled = article.published && article.publishedAt && article.publishedAt.getTime() > Date.now()
+        {latestNews.map((article) => {
+          const isScheduled = article.published && article.publishedAt && article.publishedAt.getTime() > now
           const statusLabel = !article.published ? 'Brouillon' : isScheduled ? 'Programmée' : 'Publié'
           const statusClass = !article.published ? 'bg-cream-2 text-muted' : isScheduled ? 'bg-gold text-white' : 'bg-fire text-white'
           return (
@@ -87,7 +106,7 @@ export default async function AdminDashboard() {
             </Link>
           )
         })}
-        {news.length === 0 && (
+        {latestNews.length === 0 && (
           <p className="px-5 py-8 text-sm text-muted">
             Aucune actualité pour l&apos;instant —{' '}
             <Link href="/admin/actualites/nouvelle" className="text-ink underline underline-offset-2">

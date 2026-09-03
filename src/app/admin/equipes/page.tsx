@@ -5,15 +5,19 @@ import { ConfirmButton } from '@/components/portal/ConfirmButton'
 
 export const dynamic = 'force-dynamic'
 
-export default async function AdminTeamsPage() {
+export default async function AdminTeamsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q } = await searchParams
+  const query = q?.trim() ?? ''
+
   const teams = await prisma.team.findMany({
+    where: query ? { name: { contains: query, mode: 'insensitive' } } : undefined,
     orderBy: { createdAt: 'asc' },
     include: { _count: { select: { athletes: true } }, coaches: true },
   })
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
         <h1 className="text-2xl font-bold text-ink">Équipes</h1>
         <Link
           href="/admin/equipes/nouvelle"
@@ -22,6 +26,16 @@ export default async function AdminTeamsPage() {
           + Nouvelle équipe
         </Link>
       </div>
+
+      <form action="/admin/equipes" method="get" className="mb-6">
+        <input
+          type="text"
+          name="q"
+          defaultValue={query}
+          placeholder="Rechercher une équipe…"
+          className="w-full max-w-sm border border-border px-3 py-2 text-sm focus:outline-none focus:border-ink bg-white"
+        />
+      </form>
 
       <div className="border border-border divide-y divide-border bg-white">
         {teams.map((team) => (
@@ -44,17 +58,18 @@ export default async function AdminTeamsPage() {
                   await deleteTeam(team.id)
                 }}
               >
-                <ConfirmButton
-                  confirmMessage={`Supprimer l'équipe ${team.name} ? Ses athlètes seront aussi supprimés.`}
-                  className="text-sm text-fire"
-                >
+                <ConfirmButton confirmMessage={`Supprimer l'équipe ${team.name} ?`} className="text-sm text-fire">
                   Supprimer
                 </ConfirmButton>
               </form>
             </div>
           </div>
         ))}
-        {teams.length === 0 && <p className="px-5 py-8 text-sm text-muted">Aucune équipe pour l&apos;instant.</p>}
+        {teams.length === 0 && (
+          <p className="px-5 py-8 text-sm text-muted">
+            {query ? 'Aucune équipe ne correspond à ta recherche.' : 'Aucune équipe pour l’instant.'}
+          </p>
+        )}
       </div>
     </div>
   )

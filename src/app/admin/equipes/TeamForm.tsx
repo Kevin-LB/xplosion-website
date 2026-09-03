@@ -1,6 +1,7 @@
 import type { Team as PrismaTeam } from '@prisma/client'
 import { ImageDropField } from '@/components/portal/ImageDropField'
 import { ImageGalleryField } from '@/components/portal/ImageGalleryField'
+import { TagPicker } from '@/components/portal/TagPicker'
 
 const inputClass = 'w-full border border-border px-3 py-2 text-sm focus:outline-none focus:border-ink'
 const labelClass = 'block text-xs font-medium uppercase tracking-wider text-muted mb-1.5'
@@ -8,10 +9,14 @@ const labelClass = 'block text-xs font-medium uppercase tracking-wider text-mute
 export function TeamForm({
   action,
   defaultValues,
+  coachOptions,
+  initialCoachIds,
   submitLabel,
 }: {
   action: (formData: FormData) => void | Promise<void>
   defaultValues?: Partial<PrismaTeam>
+  coachOptions: { id: string; label: string }[]
+  initialCoachIds: string[]
   submitLabel: string
 }) {
   return (
@@ -59,6 +64,10 @@ export function TeamForm({
               <label className={labelClass} htmlFor="trainingDays">Jours d&apos;entraînement</label>
               <input id="trainingDays" name="trainingDays" defaultValue={defaultValues?.trainingDays?.join(', ') ?? ''} className={inputClass} placeholder="Lundi, Mercredi, Vendredi" />
             </div>
+          </div>
+          <div>
+            <label className={labelClass}>Coachs de l&apos;équipe</label>
+            <TagPicker name="coachIds" options={coachOptions} initialSelectedIds={initialCoachIds} placeholder="Rechercher un coach…" />
           </div>
         </div>
 

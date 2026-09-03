@@ -15,16 +15,44 @@ function toDatetimeLocal(date: Date | null | undefined): string {
 export function NewsForm({
   action,
   defaultValues,
-  submitLabel,
+  deleteSlot,
 }: {
   action: (formData: FormData) => void | Promise<void>
   defaultValues?: Partial<News>
-  submitLabel: string
+  deleteSlot?: React.ReactNode
 }) {
   const isFuture = defaultValues?.publishedAt ? defaultValues.publishedAt.getTime() > Date.now() : false
 
   return (
     <form action={action} className="max-w-6xl">
+      <div className="flex flex-wrap items-center gap-3 mb-8">
+        <button
+          type="submit"
+          name="intent"
+          value="draft"
+          className="border border-ink text-ink text-sm font-medium px-5 py-2.5 hover:bg-ink hover:text-white transition-colors"
+        >
+          Enregistrer en brouillon
+        </button>
+        <button
+          type="submit"
+          name="intent"
+          value="now"
+          className="bg-ink text-white text-sm font-medium px-5 py-2.5 hover:bg-fire transition-colors"
+        >
+          Publier maintenant
+        </button>
+        <button
+          type="submit"
+          name="intent"
+          value="scheduled"
+          className="bg-gold text-white text-sm font-medium px-5 py-2.5 hover:opacity-90 transition-opacity"
+        >
+          Programmer
+        </button>
+        {deleteSlot}
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10">
         <div className="flex flex-col gap-5">
           <div>
@@ -45,31 +73,21 @@ export function NewsForm({
           <ImageDropField name="coverImage" label="Image de couverture" initialUrl={defaultValues?.coverImage} />
           <ImageGalleryField name="gallery" label="Autres photos" initialUrls={defaultValues?.gallery ?? []} />
 
-          <div className="border border-border bg-white p-4 flex flex-col gap-3">
-            <label className="flex items-center gap-2 text-sm text-ink font-medium">
-              <input type="checkbox" name="published" defaultChecked={defaultValues?.published ?? false} />
-              Publier
-            </label>
-            <div>
-              <label className={labelClass} htmlFor="publishedAt">Date de publication</label>
-              <input
-                id="publishedAt"
-                name="publishedAt"
-                type="datetime-local"
-                defaultValue={toDatetimeLocal(isFuture ? defaultValues?.publishedAt : null)}
-                className={inputClass}
-              />
-              <p className="text-xs text-muted mt-1.5">
-                Laisse vide pour publier immédiatement, ou choisis une date/heure future pour programmer la publication.
-              </p>
-            </div>
+          <div className="border border-border bg-white p-4">
+            <label className={labelClass} htmlFor="publishedAt">Date de programmation</label>
+            <input
+              id="publishedAt"
+              name="publishedAt"
+              type="datetime-local"
+              defaultValue={toDatetimeLocal(isFuture ? defaultValues?.publishedAt : null)}
+              className={inputClass}
+            />
+            <p className="text-xs text-muted mt-1.5">
+              Utilisée uniquement par le bouton <strong>Programmer</strong> ci-dessus — laisse vide pour publier avec la date/heure actuelle.
+            </p>
           </div>
         </div>
       </div>
-
-      <button type="submit" className="mt-8 bg-ink text-white text-sm font-medium px-6 py-2.5 hover:bg-fire transition-colors">
-        {submitLabel}
-      </button>
     </form>
   )
 }

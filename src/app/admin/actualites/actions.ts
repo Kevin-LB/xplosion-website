@@ -20,20 +20,21 @@ async function resolveGallery(formData: FormData): Promise<string[]> {
   return [...kept, ...uploaded]
 }
 
-// "Publier" coché + date vide = publication immédiate (ou date déjà en place
-// si on modifie un article déjà publié, pour ne pas le faire "remonter") ;
-// "Publier" coché + date future = programmée (la page publique n'affiche
-// que publishedAt <= maintenant).
+// Le formulaire a 3 boutons ("Brouillon" / "Publier maintenant" /
+// "Programmer"), chacun soumettant un `intent` différent — plus fiable
+// qu'une case à cocher + une date à interpréter.
 function resolvePublishState(
   formData: FormData,
   existingPublishedAt: Date | null = null
 ): { published: boolean; publishedAt: Date | null } {
-  const published = formData.get('published') === 'on'
-  if (!published) return { published: false, publishedAt: null }
+  const intent = String(formData.get('intent') ?? 'draft')
 
+  if (intent === 'draft') return { published: false, publishedAt: null }
+  if (intent === 'now') return { published: true, publishedAt: existingPublishedAt ?? new Date() }
+
+  // intent === 'scheduled'
   const raw = String(formData.get('publishedAt') ?? '')
-  if (raw) return { published: true, publishedAt: new Date(raw) }
-  return { published: true, publishedAt: existingPublishedAt ?? new Date() }
+  return { published: true, publishedAt: raw ? new Date(raw) : existingPublishedAt ?? new Date() }
 }
 
 export async function createNews(formData: FormData) {

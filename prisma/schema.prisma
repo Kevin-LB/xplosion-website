@@ -64,7 +64,7 @@ model Team {
   updatedAt       DateTime   @updatedAt
 
   coaches       User[]         @relation("TeamCoaches")
-  athletes      Athlete[]
+  athletes      Athlete[]      @relation("TeamAthletes")
   homeworkWeeks HomeworkWeek[]
 
   @@map("teams")
@@ -77,15 +77,16 @@ model Athlete {
   // Poste dans l'équipe (ex: "Flyer", "Base", "Back spot", "Tumbler") —
   // équivalent de la colonne "Rôle" du tableau Excel du club.
   position  String?
+  birthDate DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  teamId String
-  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  // Un athlète peut être affilié à plusieurs équipes (ex: une équipe
+  // compétition + une équipe Group Stunt).
+  teams Team[] @relation("TeamAthletes")
 
   homeworkCompletions HomeworkCompletion[]
 
-  @@index([teamId])
   @@map("athletes")
 }
 

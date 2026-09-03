@@ -50,8 +50,11 @@ export async function createTeam(formData: FormData) {
   const slug = slugify(base.name)
   const photo = await resolvePhoto(formData, slug)
   const gallery = await resolveGallery(formData, slug)
+  const coachIds = formData.getAll('coachIds').map(String)
 
-  await prisma.team.create({ data: { ...base, slug, photo, gallery } })
+  await prisma.team.create({
+    data: { ...base, slug, photo, gallery, coaches: { connect: coachIds.map((id) => ({ id })) } },
+  })
 
   revalidatePath('/admin/equipes')
   revalidatePath('/equipes')
@@ -68,8 +71,12 @@ export async function updateTeam(teamId: string, formData: FormData) {
   const base = baseTeamData(formData)
   const photo = await resolvePhoto(formData, team.slug)
   const gallery = await resolveGallery(formData, team.slug)
+  const coachIds = formData.getAll('coachIds').map(String)
 
-  await prisma.team.update({ where: { id: teamId }, data: { ...base, photo, gallery } })
+  await prisma.team.update({
+    where: { id: teamId },
+    data: { ...base, photo, gallery, coaches: { set: coachIds.map((id) => ({ id })) } },
+  })
 
   revalidatePath('/admin/equipes')
   revalidatePath('/equipes')
@@ -85,32 +92,41 @@ export async function deleteTeam(teamId: string) {
   revalidatePath('/')
 }
 
-export async function addAthlete(teamId: string, formData: FormData) {
+export async function createAthleteForTeam(teamId: string, formData: FormData) {
   await requireAdmin()
 
   const firstName = String(formData.get('firstName') ?? '').trim()
   const lastName = String(formData.get('lastName') ?? '').trim()
   const position = String(formData.get('position') ?? '').trim() || null
+  const birthDateRaw = String(formData.get('birthDate') ?? '')
   if (!firstName || !lastName) throw new Error('Prénom et nom requis')
 
   await prisma.athlete.create({
-    data: { firstName, lastName, position, teamId },
+    data: {
+      firstName,
+      lastName,
+      position,
+      birthDate: birthDateRaw ? new Date(birthDateRaw) : null,
+      teams: { connect: { id: teamId } },
+    },
   })
 
   revalidatePath(`/admin/equipes/${teamId}`)
+  revalidatePath('/admin/athletes')
 }
 
-export async function removeAthlete(athleteId: string, teamId: string) {
+export async function attachExistingAthlete(teamId: string, athleteId: string) {
   await requireAdmin()
-  await prisma.athlete.delete({ where: { id: athleteId } })
+  await prisma.team.update({ where: { id: teamId }, data: { athletes: { connect: { id: athleteId } } } })
   revalidatePath(`/admin/equipes/${teamId}`)
+  revalidatePath('/admin/athletes')
 }
 
-export async function setTeamCoaches(teamId: string, coachIds: string[]) {
+// Retire l'athlète de CETTE équipe (le retire de la relation, ne supprime
+// pas sa fiche — il peut appartenir à d'autres équipes).
+export async function detachAthlete(athleteId: string, teamId: string) {
   await requireAdmin()
-  await prisma.team.update({
-    where: { id: teamId },
-    data: { coaches: { set: coachIds.map((id) => ({ id })) } },
-  })
+  await prisma.team.update({ where: { id: teamId }, data: { athletes: { disconnect: { id: athleteId } } } })
   revalidatePath(`/admin/equipes/${teamId}`)
+  revalidatePath('/admin/athletes')
 }
