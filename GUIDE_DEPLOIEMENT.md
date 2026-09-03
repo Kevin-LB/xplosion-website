@@ -59,6 +59,12 @@ Les photos uploadées depuis l'admin (équipes, actualités) sont écrites dans 
 
 Lance le déploiement depuis Dokploy (bouton **Deploy**). Le build utilise le `Dockerfile` du repo — il peut prendre quelques minutes la première fois.
 
+### À propos du cache de build
+
+Chaque déploiement reconstruit un conteneur neuf (`npm ci` → `prisma generate` → `next build`) — pas de process qui tournerait en continu et garderait une ancienne version en mémoire, contrairement à `npm run dev` en local. Le `Dockerfile` copie `prisma/schema.prisma` **avant** `npm ci`, donc Docker invalide automatiquement le cache de cette étape dès que le schéma change — le client Prisma est toujours régénéré à jour, pas d'action à faire.
+
+Si un déploiement se comporte bizarrement sans raison apparente, Dokploy propose une option **"Rebuild without cache"** (ou équivalent, selon la version) sur le service — à utiliser en dernier recours pour forcer un rebuild complet sans réutiliser aucune couche Docker.
+
 ## 5. Créer les tables (migrations)
 
 Une fois le conteneur démarré, il faut appliquer les migrations Prisma **une fois** (elles ne se lancent pas toutes seules). Depuis le terminal intégré de Dokploy (bouton **Terminal**/**Shell** sur le service application), ou en SSH + `docker exec` :
