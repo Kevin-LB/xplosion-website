@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { QuickSearch } from '@/components/portal/QuickSearch'
 
 export const dynamic = 'force-dynamic'
 
@@ -72,14 +73,12 @@ export default async function AdminDashboard() {
           Voir tout →
         </Link>
       </div>
-      <form action="/admin/equipes" method="get" className="mb-12 max-w-sm">
-        <input
-          type="text"
-          name="q"
+      <div className="mb-12">
+        <QuickSearch
+          items={teams.map((t) => ({ id: t.id, label: t.name, href: `/admin/equipes/${t.id}` }))}
           placeholder="Rechercher une équipe…"
-          className="w-full border border-border px-3 py-2 text-sm focus:outline-none focus:border-ink bg-white"
         />
-      </form>
+      </div>
 
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-ink">Dernières actualités</h2>
